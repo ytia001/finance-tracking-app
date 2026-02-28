@@ -1,28 +1,36 @@
-<mat-accordion multi>
-  <mat-expansion-panel expanded>
-    <mat-expansion-panel-header>
-      <mat-panel-title> Expenditure Breakdown </mat-panel-title>
-      <mat-panel-description> Monthly Expenditure Breakdown</mat-panel-description>
-    </mat-expansion-panel-header>
+@let entries = (entries$ | async) ?? [];
+@if (!entries.length) {
+  <div
+    class="d-flex flex-column align-items-center justify-content-center text-center py-5 text-muted"
+  >
+    <mat-icon class="empty-icon">insert_chart</mat-icon>
+    <p class="fs-5 fw-semibold mt-3 mb-1">No data yet</p>
+    <p class="small mb-0">Add transactions to see your financial charts.</p>
+  </div>
+} @else {
+  <mat-accordion multi>
+    <mat-expansion-panel expanded>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Spending Breakdown</mat-panel-title>
+        <mat-panel-description>Expenses by category</mat-panel-description>
+      </mat-expansion-panel-header>
+      <app-pie-chart [entries]="entries" />
+    </mat-expansion-panel>
 
-    <app-pie-chart [inputData]="dummyDashboardData"></app-pie-chart>
-  </mat-expansion-panel>
+    <mat-expansion-panel expanded>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Income vs Expenses</mat-panel-title>
+        <mat-panel-description>Monthly trend over time</mat-panel-description>
+      </mat-expansion-panel-header>
+      <app-line-chart [entries]="entries" />
+    </mat-expansion-panel>
 
-  <mat-expansion-panel expanded>
-    <mat-expansion-panel-header>
-      <mat-panel-title> Expenditure Overview Line </mat-panel-title>
-      <mat-panel-description> Overview </mat-panel-description>
-    </mat-expansion-panel-header>
-
-    <app-line-chart [inputData]="dummyDashboardData"></app-line-chart>
-  </mat-expansion-panel>
-
-  <mat-expansion-panel expanded>
-    <mat-expansion-panel-header>
-      <mat-panel-title> User Growth </mat-panel-title>
-      <mat-panel-description> Last 12 months </mat-panel-description>
-    </mat-expansion-panel-header>
-
-    <app-bar-chart [inputData]="dummyDashboardData"></app-bar-chart>
-  </mat-expansion-panel>
-</mat-accordion>
+    <mat-expansion-panel expanded>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Monthly Overview</mat-panel-title>
+        <mat-panel-description>Income and expenses per month</mat-panel-description>
+      </mat-expansion-panel-header>
+      <app-bar-chart [entries]="entries" />
+    </mat-expansion-panel>
+  </mat-accordion>
+}

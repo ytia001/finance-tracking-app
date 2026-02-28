@@ -1,70 +1,93 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { TRANSACTION_FEATURE_KEY, TransactionState } from '../reducers/transactions.reducer';
 import { DataEntry } from '../../../models/DataEntry';
-import { ListData } from '../../../features/contents/transactions/transactions.component';
-import {
-  ListEntry,
-  ListGroup,
-} from '../../../features/contents/transactions/transactions-list-group/transactions-list-group.component';
-import { Category } from '../../constants/Category';
+import { Category, CategoryConfigurations } from '../../constants/Category';
+import { DayGroup, MonthTab, TransactionEntry } from '../../../models/transaction.models';
+import { DateTimeUtil } from '../../utils/date-id.util';
+
+// Interface used internally to keep track of accumulated data for each month to build MonthTabs
+interface MonthAccumulator {
+  income: number;
+  spend: number;
+
+  // sort by date for entries in the same month, latest → oldest
+  dayOrder: string[];
+
+  // Map of dateId → entries for that day, for entries in the same month
+  dayMap: Map<string, TransactionEntry[]>;
+}
 
 export const selectTransactionState =
   createFeatureSelector<TransactionState>(TRANSACTION_FEATURE_KEY);
 
 export const selectLoading = createSelector(selectTransactionState, (state) => state.loading);
 
-export const selectListData = createSelector(selectTransactionState, (state) =>
-  transformToListData(state.entries),
+export const selectMonthTabs = createSelector(selectTransactionState, (state) =>
+  buildMonthTabs(state.entries),
 );
 
-const transformToListData = (entries: DataEntry[]): ListData | null => {
-  if (!entries) return null;
+export const buildMonthTabs = (entries: DataEntry[]): MonthTab[] => {
+  if (!entries?.length) return [];
 
-  const groups: ListGroup[] = [];
-  const entryMap = new Map<string, ListEntry[]>();
+  // Sort All entries latest → oldest up front
+  // Sorted Entries: 1. Latest month 2. Latest day (for same month)
+  const sorted = [...entries].sort((a, b) => b.date - a.date);
 
-  // Sort entries by date first to ensure the list appears in order
-  const sortedEntries = [...entries].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
+  const monthOrder: string[] = [];
+  const monthMap = new Map<string, MonthAccumulator>();
 
-  sortedEntries.forEach((entry) => {
-    // 1. Create a string identifier (e.g., "2023-10-27")
+  sorted.forEach((entry) => {
+    // Retrieve the required information from the entry
     const dateObj = new Date(entry.date);
-    const dateId = dateObj.toISOString().substring(0, 10);
-
     const amount = Number(entry.amount);
     const isIncome = entry.category === Category.INCOME;
 
-    // 2. Initialize the group if it doesn't exist
-    if (!entryMap.has(dateId)) {
-      entryMap.set(dateId, []);
-      groups.push({
-        identifier: dateId,
-        inflow: 0,
-        outflow: 0,
-        netIncome: 0,
-      });
+    // Retrieve the monthId and dateId as key for monthMap and dayMap respectively
+    const monthId: string = DateTimeUtil.toMonthId(dateObj);
+    const dateId: string = DateTimeUtil.toDateId(dateObj);
+
+    if (!monthMap.has(monthId)) {
+      monthMap.set(monthId, { income: 0, spend: 0, dayOrder: [], dayMap: new Map() });
+      monthOrder.push(monthId);
     }
 
-    // 3. Update the existing group totals
-    const group = groups.find((g) => g.identifier === dateId)!;
+    const month = monthMap.get(monthId)!;
     if (isIncome) {
-      group.inflow += amount;
+      month.income += amount;
     } else {
-      group.outflow += amount;
+      month.spend += amount;
     }
-    group.netIncome = group.inflow - group.outflow;
 
-    // 4. Add the entry to the map
-    const listEntry: ListEntry = {
+    if (!month.dayMap.has(dateId)) {
+      month.dayMap.set(dateId, []);
+      month.dayOrder.push(dateId);
+    }
+
+    month.dayMap.get(dateId)!.push({
+      id: entry.id,
       category: entry.category,
-      amount: amount,
+      categoryLabel: CategoryConfigurations[entry.category]?.label ?? entry.category,
+      categoryIcon: CategoryConfigurations[entry.category]?.icon ?? 'category',
+      amount,
       date: dateObj,
-    };
-
-    entryMap.get(dateId)!.push(listEntry);
+      isIncome,
+    } as TransactionEntry);
   });
 
-  return { groups, entryMap };
+  // reverse monthOrder to ensure earliest month is first
+  return monthOrder.reverse().map((monthId) => {
+    const { income, spend, dayOrder, dayMap } = monthMap.get(monthId)!;
+    const [year, month] = monthId.split('-').map(Number);
+    const label = new Date(year, month - 1, 1).toLocaleDateString('en-US', {
+      month: 'long',
+      year: 'numeric',
+    });
+
+    const dayGroups: DayGroup[] = dayOrder.map((dateId) => ({
+      dateId,
+      entries: dayMap.get(dateId)!,
+    }));
+
+    return { monthId, label, income, spend, netBalance: income - spend, dayGroups };
+  });
 };

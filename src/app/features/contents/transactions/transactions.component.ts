@@ -1,48 +1,42 @@
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, CurrencyPipe, NgClass } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatTabsModule } from '@angular/material/tabs';
 import { Store } from '@ngrx/store';
-import { map, Observable } from 'rxjs';
-import {
-  ListEntry,
-  ListGroup,
-  ListGroupData,
-  ListGroupIdentifier,
-  TransactionsListGroupComponent,
-} from './transactions-list-group/transactions-list-group.component';
-import { selectListData } from '../../../core/store/selectors/transactions.selector';
-
-export interface ListData {
-  groups: ListGroup[];
-  entryMap: Map<ListGroupIdentifier, ListEntry[]>;
-}
+import { Observable } from 'rxjs';
+import { selectMonthTabs } from '../../../core/store/selectors/transactions.selector';
+import { MonthTab, TransactionEntry } from '../../../models/transaction.models';
+import { retrieveMatModalConfiguration } from '../../../core/constants/Modal';
+import { TransactionDetailModalComponent } from './transaction-detail-modal/transaction-detail-modal.component';
+import { TransactionsListGroupComponent } from './transactions-list-group/transactions-list-group.component';
 
 @Component({
   selector: 'app-transactions',
-  imports: [CommonModule, TransactionsListGroupComponent, MatListModule, MatIconModule],
+  imports: [
+    AsyncPipe,
+    CurrencyPipe,
+    NgClass,
+    MatTabsModule,
+    MatDialogModule,
+    TransactionsListGroupComponent,
+  ],
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.scss',
 })
 export class TransactionsComponent {
-  private store: Store = inject(Store);
+  private store = inject(Store);
+  private dialog = inject(MatDialog);
 
-  listData$: Observable<ListData | null> = this.store.select(selectListData);
+  monthTabs$: Observable<MonthTab[]> = this.store.select(selectMonthTabs);
 
-  listGroupData$: Observable<ListGroupData[]> = this.listData$.pipe(
-    map((listData) => this.transformListDataToListGroupData(listData)),
-  );
+  netBalanceClass(tab: MonthTab): string {
+    return tab.netBalance >= 0 ? 'text-success' : 'text-danger';
+  }
 
-  private transformListDataToListGroupData(data: ListData | null): ListGroupData[] {
-    if (!data) {
-      return [];
-    }
-
-    return data.groups.map((group) => {
-      return {
-        group: group,
-        entries: data.entryMap.get(group.identifier) ?? [],
-      } as ListGroupData;
-    });
+  openDetail(entry: TransactionEntry): void {
+    this.dialog.open(
+      TransactionDetailModalComponent,
+      retrieveMatModalConfiguration(entry, { width: '65%', height: '45%' }),
+    );
   }
 }

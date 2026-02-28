@@ -1,0 +1,15 @@
+.x-small {
+  font-size: 0.75rem;
+}
+
+:host ::ng-deep {
+  .mat-mdc-tab {
+    min-width: 30%;
+    max-width: 30%;
+    flex: 1 0 30%;
+  }
+
+  .mat-mdc-tab-header {
+    width: 100%;
+  }
+}

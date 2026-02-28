@@ -10,7 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectOption } from '../../../models/MaterialModels';
-import { CategoryOptions } from '../../../core/constants/Category';
+import { CategoryConfigurations } from '../../../core/constants/Category';
 
 @Component({
   selector: 'app-entry-modal',
@@ -35,9 +35,10 @@ export class EntryModalComponent extends AbstractModalDialogComponent {
   entryFormGroup: FormGroup = this.entryModalControlService.toFormGroup();
 
   get categoryOptions(): MatSelectOption[] {
-    return Object.entries(CategoryOptions).map(([value, label]) => {
-      return { value, label };
-    });
+    return Object.entries(CategoryConfigurations).map(([value, config]) => ({
+      value,
+      label: config.label,
+    }));
   }
 
   override closeDialog(): void {

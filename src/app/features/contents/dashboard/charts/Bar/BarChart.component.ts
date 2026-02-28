@@ -1,10 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { AbstractChartComponent, AbstractDatapoint } from '../abstract-chart';
-import { DashboardData } from '../../dashboard.component';
+import { Component, Input, OnChanges } from '@angular/core';
+import { AbstractChartComponent } from '../abstract-chart';
+import { Category } from '../../../../../core/constants/Category';
+import { DataEntry } from '../../../../../models/DataEntry';
 import { ChartData, ChartOptions } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
-import { ChartGroupBy } from '../../../../../core/constants/Chart';
-import { DataEntry } from '../../../../../models/DataEntry';
+import { DateTimeUtil } from '../../../../../core/utils/date-id.util';
 
 @Component({
   selector: 'app-bar-chart',
@@ -12,73 +12,76 @@ import { DataEntry } from '../../../../../models/DataEntry';
   templateUrl: './BarChart.component.html',
   styleUrl: './BarChart.component.scss',
 })
-export class BarChartComponent extends AbstractChartComponent<'bar'> implements OnInit {
-  @Input()
-  inputData!: DashboardData;
+export class BarChartComponent extends AbstractChartComponent<'bar'> implements OnChanges {
+  @Input() entries: DataEntry[] = [];
 
-  groupBy: ChartGroupBy = ChartGroupBy.MONTH;
+  readonly chartType = 'bar' as const;
 
-  chartType = 'bar' as const;
+  ngOnChanges(): void {
+    this.setData(this.entries);
+  }
 
-  override parseData(data: DashboardData): ChartData<'bar'> {
-    const categoryMap = new Map<string, number>();
+  /**
+   * Monthly grouped bar chart showing income and expenses side-by-side.
+   * Labels are sorted chronologically oldest → newest.
+   */
+  override parseData(entries: DataEntry[]): ChartData<'bar'> {
+    const incomeMap = new Map<string, number>();
+    const expenseMap = new Map<string, number>();
 
-    data.rawData.forEach((entry) => {
-      const key = this.getGroupKey(entry, this.groupBy);
-      categoryMap.set(key, (categoryMap.get(key) || 0) + Number(entry.amount));
+    entries.forEach((entry) => {
+      const monthId = DateTimeUtil.toMonthId(entry.date);
+      const amount = Number(entry.amount);
+      if (entry.category === Category.INCOME) {
+        incomeMap.set(monthId, (incomeMap.get(monthId) || 0) + amount);
+      } else {
+        expenseMap.set(monthId, (expenseMap.get(monthId) || 0) + amount);
+      }
     });
 
-    // Labels and values
-    const labels = Array.from(categoryMap.keys());
-    const values: AbstractDatapoint = Array.from(categoryMap.values());
+    const allMonths = Array.from(new Set([...incomeMap.keys(), ...expenseMap.keys()])).sort();
+    const incomeByMonths = allMonths.map((month) => incomeMap.get(month) ?? 0);
+    const expenseByMonths = allMonths.map((month) => expenseMap.get(month) ?? 0);
 
     return {
-      labels: labels,
+      labels: allMonths,
       datasets: [
         {
-          label: 'Expenditure',
-          data: values,
+          label: 'Income',
+          data: incomeByMonths,
+          backgroundColor: 'rgba(76, 175, 80, 0.7)',
+          borderColor: '#4CAF50',
+          borderWidth: 1,
+          borderRadius: 4,
+        },
+        {
+          label: 'Expenses',
+          data: expenseByMonths,
+          backgroundColor: 'rgba(244, 67, 54, 0.7)',
+          borderColor: '#F44336',
+          borderWidth: 1,
+          borderRadius: 4,
         },
       ],
     };
   }
 
-  ngOnInit(): void {
-    this.setData(this.inputData);
-  }
-
   get chartOptions(): ChartOptions<'bar'> {
     return {
       responsive: true,
-      animation: {
-        duration: 2000,
-        easing: 'easeOutQuart',
-      },
+      animation: { duration: 1000, easing: 'easeOutQuart' },
+      interaction: { mode: 'index', intersect: false },
       plugins: {
-        legend: {
-          position: 'top',
+        legend: { position: 'top' },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => ` ${ctx.dataset.label}: $${(ctx.parsed.y as number).toFixed(2)}`,
+          },
         },
-        title: {
-          display: false,
-          text: 'Expenditure Bar Chart',
-        },
+      },
+      scales: {
+        y: { beginAtZero: true, ticks: { callback: (v) => `$${v}` } },
       },
     };
-  }
-
-  private getGroupKey(data: DataEntry, chartGroupBy: ChartGroupBy): string {
-    if (chartGroupBy === ChartGroupBy.Category) {
-      return data.category;
-    } else {
-      const dateObj = new Date(data.date);
-      const y = dateObj.getFullYear();
-      const m = (dateObj.getMonth() + 1).toString().padStart(2, '0');
-      const d = dateObj.getDate().toString().padStart(2, '0');
-
-      if (chartGroupBy === ChartGroupBy.YEAR) return `${y}`;
-      if (chartGroupBy === ChartGroupBy.MONTH) return `${y}-${m}`;
-      if (chartGroupBy === ChartGroupBy.DAY) return `${d}-${m}-${y}`;
-    }
-    return '';
   }
 }

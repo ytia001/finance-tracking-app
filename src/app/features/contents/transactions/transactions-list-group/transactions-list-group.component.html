@@ -1,20 +1,26 @@
-@if (listGroup) {
-  <div mat-subheader>
-    <span>{{ listGroup.identifier | date: 'fullDate' }}</span>
-    <span class="group-totals">
-      Inflow: {{ listGroup.inflow | currency }} | Outflow: {{ listGroup.outflow | currency }} | Net:
-      {{ listGroup.netIncome | currency }}
-    </span>
+<div class="px-3 py-1 text-muted small border-bottom bg-light">
+  {{ dayGroup.dateId | date: 'fullDate' }}
+</div>
+
+@for (entry of dayGroup.entries; track entry.id) {
+  <div
+    class="d-flex align-items-center px-3 py-2 border-bottom entry-row"
+    role="button"
+    tabindex="0"
+    (click)="onEntryClick(entry)"
+    (keyup.enter)="onEntryClick(entry)"
+  >
+    <mat-icon class="me-3 flex-shrink-0" [ngClass]="isIncomeClass(entry)">
+      {{ entry.categoryIcon }}
+    </mat-icon>
+
+    <div class="flex-grow-1 overflow-hidden">
+      <div class="small fw-medium text-truncate">{{ entry.categoryLabel }}</div>
+      <div class="x-small text-muted">{{ entry.date | date: 'shortTime' }}</div>
+    </div>
+
+    <div class="ms-3 fw-semibold small flex-shrink-0" [ngClass]="isIncomeClass(entry)">
+      {{ entry.isIncome ? '+' : '-' }}{{ entry.amount | currency }}
+    </div>
   </div>
 }
-
-@for (entry of listEntry; track $index) {
-  <mat-list-item>
-    <mat-icon matListItemIcon>
-      {{ entry.category === 'income' ? 'add' : 'remove' }}
-    </mat-icon>
-    <div matListItemLine>{{ entry.category }} — {{ entry.amount | currency }}</div>
-    <div matListItemLine>{{ entry.date | date: 'mediumDate' }}</div>
-  </mat-list-item>
-}
-<mat-divider></mat-divider>

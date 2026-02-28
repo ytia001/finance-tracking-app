@@ -7,7 +7,7 @@ export const MainResourceActions = createActionGroup({
   source: 'Main [API]',
   events: {
     'Save data entry': props<{ data: DataEntryRequest }>(),
-    'Save data entry success': props<{ data: DataEntry }>(),
-    'Save data entry failure': props<{ error: HttpErrorResponse }>(),
+    'Save data entry success': props<{ data: DataEntry; successMessage: string }>(),
+    'Save data entry failure': props<{ error: HttpErrorResponse; failureMessage: string }>(),
   },
 });
