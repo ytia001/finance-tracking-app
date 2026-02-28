@@ -1,8 +1,39 @@
-<mat-list>
-  @let listGroupData = (listGroupData$ | async) ?? undefined;
-  @if (listGroupData) {
-    @for (data of listGroupData; track $index) {
-      <app-transactions-list-group [listGroupData]="data"></app-transactions-list-group>
+@let tabs = (monthTabs$ | async) ?? [];
+
+@if (tabs.length === 0) {
+  <div class="d-flex align-items-center justify-content-center py-5 text-muted">
+    No transactions yet.
+  </div>
+} @else {
+  <mat-tab-group dynamicHeight>
+    @for (tab of tabs; track tab.monthId) {
+      <mat-tab [label]="tab.label">
+        <!-- Monthly summary callout -->
+        <div class="d-flex gap-4 px-3 py-2 border-bottom bg-light">
+          <div>
+            <div class="text-muted x-small">Income</div>
+            <div class="fw-semibold text-success">{{ tab.income | currency }}</div>
+          </div>
+          <div>
+            <div class="text-muted x-small">Spend</div>
+            <div class="fw-semibold text-danger">{{ tab.spend | currency }}</div>
+          </div>
+          <div class="ms-auto text-end">
+            <div class="text-muted x-small">Monthly Net Balance</div>
+            <div class="fw-semibold" [ngClass]="netBalanceClass(tab)">
+              {{ tab.netBalance | currency }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Day groups -->
+        @for (dayGroup of tab.dayGroups; track dayGroup.dateId) {
+          <app-transactions-list-group
+            [dayGroup]="dayGroup"
+            (entryClicked)="openDetail($event)"
+          ></app-transactions-list-group>
+        }
+      </mat-tab>
     }
-  }
-</mat-list>
+  </mat-tab-group>
+}

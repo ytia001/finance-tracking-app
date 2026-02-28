@@ -8,14 +8,19 @@ export enum Category {
   OTHERS = 'others',
 }
 
-export const CategoryOptions: Record<Category, string> = {
-  [Category.FOOD_AND_BEVERAGE]: 'Food and Beverage',
-  [Category.GROCERIES]: 'Groceries',
-  [Category.INCOME]: 'Income',
-  [Category.TRANSPORT]: 'Transport',
-  [Category.GIFTS]: 'Gifts',
-  [Category.ELECTRICAL_APPLIANCES]: 'Electrical Appliances',
-  [Category.OTHERS]: 'Others',
+export interface CategoryConfig {
+  label: string;
+  icon: string;
+}
+
+export const CategoryConfigurations: Record<Category, CategoryConfig> = {
+  [Category.FOOD_AND_BEVERAGE]: { label: 'Food and Beverage', icon: 'restaurant' },
+  [Category.GROCERIES]: { label: 'Groceries', icon: 'shopping_cart' },
+  [Category.INCOME]: { label: 'Income', icon: 'payments' },
+  [Category.TRANSPORT]: { label: 'Transport', icon: 'commute' },
+  [Category.GIFTS]: { label: 'Gifts', icon: 'card_giftcard' },
+  [Category.ELECTRICAL_APPLIANCES]: { label: 'Electrical Appliances', icon: 'electrical_services' },
+  [Category.OTHERS]: { label: 'Others', icon: 'category' },
 };
 
 export enum financialFlow {

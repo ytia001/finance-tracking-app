@@ -1,20 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ListGroupData, TransactionsListGroupComponent } from './transactions-list-group.component';
+import { Category } from '../../../../core/constants/Category';
+import { TransactionsListGroupComponent } from './transactions-list-group.component';
+import { TestHelpers } from '../../../../test-helpers';
 
 describe('TransactionsListGroupComponent', () => {
   let component: TransactionsListGroupComponent;
   let fixture: ComponentFixture<TransactionsListGroupComponent>;
 
-  const mockListGroupData: ListGroupData = {
-    group: {
-      identifier: '2026-01',
-      inflow: 1000,
-      outflow: 500,
-      netIncome: 500,
-    },
-    entries: [{ category: 'Groceries', amount: 50, date: new Date() }],
-  };
+  const mockDayGroup = TestHelpers.createDayGroup({
+    entries: [
+      TestHelpers.createTransactionEntry(),
+      TestHelpers.createTransactionEntry({ id: 2, category: Category.INCOME, isIncome: true }),
+    ],
+  });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -23,15 +21,46 @@ describe('TransactionsListGroupComponent', () => {
 
     fixture = TestBed.createComponent(TransactionsListGroupComponent);
     component = fixture.componentInstance;
-
-    component.listGroupData = mockListGroupData;
-
+    component.dayGroup = mockDayGroup;
     fixture.detectChanges();
-
     await fixture.whenStable();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('onEntryClick', () => {
+    it('should emit entryClicked with the given entry', () => {
+      const emitSpy = spyOn(component.entryClicked, 'emit');
+      const entry = TestHelpers.createTransactionEntry();
+
+      component.onEntryClick(entry);
+
+      expect(emitSpy).toHaveBeenCalledOnceWith(entry);
+    });
+
+    it('should emit the exact entry object passed', () => {
+      const incomeEntry = TestHelpers.createTransactionEntry({
+        id: 2,
+        category: Category.INCOME,
+        isIncome: true,
+        amount: 1000,
+      });
+      const emitSpy = spyOn(component.entryClicked, 'emit');
+
+      component.onEntryClick(incomeEntry);
+
+      expect(emitSpy).toHaveBeenCalledWith(incomeEntry);
+    });
+
+    it('should emit once per call', () => {
+      const emitSpy = spyOn(component.entryClicked, 'emit');
+
+      component.onEntryClick(TestHelpers.createTransactionEntry());
+      component.onEntryClick(TestHelpers.createTransactionEntry({ id: 2 }));
+
+      expect(emitSpy).toHaveBeenCalledTimes(2);
+    });
   });
 });

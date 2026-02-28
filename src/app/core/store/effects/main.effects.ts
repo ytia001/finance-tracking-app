@@ -8,6 +8,8 @@ import { MainService } from '../../services/main.services';
 import { ModalConstants } from '../../constants/Modal';
 import { EntryModalComponent } from '../../../features/main/entry-modal/entry-modal.component';
 import { DataEntryRequest } from '../../../features/main/entry-modal/entry-modal-control-service/entry-modal-control.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ToastMessages } from '../../constants/Toast';
 
 @Injectable()
 export class MainEffects {
@@ -41,8 +43,20 @@ export class MainEffects {
       ofType(MainResourceActions.saveDataEntry),
       switchMap(({ data }) =>
         this.service.create(data).pipe(
-          map((response) => MainResourceActions.saveDataEntrySuccess({ data: response })),
-          catchError((error) => of(MainResourceActions.saveDataEntryFailure({ error }))),
+          map((response) =>
+            MainResourceActions.saveDataEntrySuccess({
+              data: response,
+              successMessage: ToastMessages.DATA_ENTRY_TOAST_MESSAGES.SAVE_SUCCESS,
+            }),
+          ),
+          catchError((error: HttpErrorResponse) =>
+            of(
+              MainResourceActions.saveDataEntryFailure({
+                error,
+                failureMessage: ToastMessages.DATA_ENTRY_TOAST_MESSAGES.SAVE_FAILURE,
+              }),
+            ),
+          ),
         ),
       ),
     );

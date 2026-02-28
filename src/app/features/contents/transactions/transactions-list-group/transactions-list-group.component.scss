@@ -1,0 +1,12 @@
+.entry-row {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+}
+
+.x-small {
+  font-size: 0.7rem;
+}

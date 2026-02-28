@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { AbstractChartComponent, AbstractDatapoint } from '../abstract-chart';
-import { DashboardData } from '../../dashboard.component';
-import { Category } from '../../../../../core/constants/Category';
+import { Component, Input, OnChanges } from '@angular/core';
+import { AbstractChartComponent } from '../abstract-chart';
+import { Category, CategoryConfigurations } from '../../../../../core/constants/Category';
+import { DataEntry } from '../../../../../models/DataEntry';
 import { ChartData, ChartOptions } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import chroma from 'chroma-js';
@@ -12,55 +12,52 @@ import chroma from 'chroma-js';
   templateUrl: './PieChart.component.html',
   styleUrl: './PieChart.component.scss',
 })
-export class PieChartComponent extends AbstractChartComponent<'pie'> implements OnInit {
-  @Input()
-  inputData!: DashboardData;
+export class PieChartComponent extends AbstractChartComponent<'pie'> implements OnChanges {
+  @Input() entries: DataEntry[] = [];
 
-  chartType = 'pie' as const;
+  readonly chartType = 'pie' as const;
 
-  override parseData(data: DashboardData): ChartData<'pie'> {
-    const categoryMap = new Map<Category, number>();
-
-    data.rawData.forEach((entry) => {
-      const value = Number(entry.amount);
-      categoryMap.set(entry.category, (categoryMap.get(entry.category) || 0) + value);
-    });
-
-    // Labels and values
-    const labels = Array.from(categoryMap.keys());
-    const values: AbstractDatapoint = Array.from(categoryMap.values());
-
-    // Optional: background colors
-    const backgroundColors = chroma.scale('Set2').colors(labels.length);
-
-    return {
-      labels: labels,
-      datasets: [
-        {
-          data: values,
-          backgroundColor: backgroundColors.slice(0, labels.length),
-        },
-      ],
-    };
+  ngOnChanges(): void {
+    this.setData(this.entries);
   }
 
-  ngOnInit(): void {
-    this.setData(this.inputData);
+  // Spending breakdown by category — income entries are excluded.
+  override parseData(entries: DataEntry[]): ChartData<'pie'> {
+    const spendMap = new Map<Category, number>();
+
+    entries
+      .filter((entry) => entry.category !== Category.INCOME)
+      .forEach((entry) => {
+        const value = Number(entry.amount);
+        spendMap.set(entry.category, (spendMap.get(entry.category) || 0) + value);
+      });
+
+    const categories = Array.from(spendMap.keys());
+    const values = Array.from(spendMap.values());
+    const labels = categories.map((cat) => CategoryConfigurations[cat]?.label ?? cat);
+    const backgroundColors = chroma
+      .scale(['#FF6384', '#FFCE56', '#36A2EB', '#4BC0C0', '#9966FF', '#FF9F40', '#C9CBCF'])
+      .colors(categories.length);
+
+    return {
+      labels,
+      datasets: [{ data: values, backgroundColor: backgroundColors, hoverOffset: 6 }],
+    };
   }
 
   get pieChartOptions(): ChartOptions<'pie'> {
     return {
       responsive: true,
-      animation: {
-        duration: 2000,
-        easing: 'easeOutQuart',
-      },
+      animation: { duration: 1000, easing: 'easeOutQuart' },
       plugins: {
-        legend: {
-          position: 'top',
+        legend: { position: 'right' },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => ` $${(ctx.parsed as number).toFixed(2)}`,
+          },
         },
       },
-      cutout: '50%',
+      cutout: '55%',
     };
   }
 }

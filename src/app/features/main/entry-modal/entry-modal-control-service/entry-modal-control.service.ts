@@ -32,6 +32,7 @@ export class EntryModalControlService {
   }
 
   toRequestPayload(formGroup: FormGroup): DataEntryRequest {
+    console.log('FormGroup value:', formGroup.value); // Debug log to check form values
     return formGroup.value as DataEntryRequest;
   }
 }
