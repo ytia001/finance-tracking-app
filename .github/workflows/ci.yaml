@@ -13,7 +13,8 @@ permissions:
   checks: write
 
 jobs:
-  test:
+  test-ui:
+    name: UI — lint & test
     runs-on: ubuntu-latest
 
     steps:
@@ -25,53 +26,45 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install UI dependencies
+        run: npm --prefix apps/ui ci
 
       - name: Run lint
-        run: npm run lint
+        run: npm --prefix apps/ui run lint
 
       - name: Run tests
-        run: npm run test -- --watch=false --browsers=ChromeHeadless
+        run: npm --prefix apps/ui run test -- --watch=false --browsers=ChromeHeadless
 
       - name: Upload Test Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-report
-          path: test-results/junit-results.xml
+          path: apps/ui/test-results/junit-results.xml
 
       - name: Display Test Report
         if: always()
         uses: dorny/test-reporter@v2
         with:
           name: Angular Unit Tests
-          path: test-results/junit-results.xml
+          path: apps/ui/test-results/junit-results.xml
           reporter: java-junit
 
-  # build-and-publish:
-  #   name: Build & Publish
-  #   needs: test
-  #   runs-on: ubuntu-latest
+  build-api:
+    name: API — build
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-  #     - name: Setup Node.js
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 20
-  #         registry-url: https://npm.pkg.github.com
-  #         scope: '@ytia001' #must match github user, same with 'name' in package.json
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
 
-  #     - name: Install dependencies
-  #       run: npm ci
+      - name: Install API dependencies
+        run: npm --prefix apps/api ci
 
-  #     - name: Build Angular app
-  #       run: npm run build -- --configuration production
-
-  #     - name: Publish to GitHub Packages
-  #       run: npm publish
-  #       env:
-  #         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build API
+        run: npm --prefix apps/api run build

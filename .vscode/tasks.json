@@ -3,40 +3,63 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "type": "npm",
-      "script": "start",
+      "label": "UI: serve",
+      "group": { "kind": "build", "isDefault": true },
+      "type": "shell",
+      "command": "npm run start",
+      "options": { "cwd": "${workspaceFolder}/apps/ui" },
       "isBackground": true,
       "problemMatcher": {
         "owner": "typescript",
         "pattern": "$tsc",
         "background": {
           "activeOnStart": true,
-          "beginsPattern": {
-            "regexp": "Changes detected"
-          },
-          "endsPattern": {
-            "regexp": "bundle generation (complete|failed)"
-          }
+          "beginsPattern": { "regexp": "Changes detected" },
+          "endsPattern": { "regexp": "bundle generation (complete|failed)" }
         }
       }
     },
     {
-      "type": "npm",
-      "script": "test",
+      "label": "UI: test",
+      "type": "shell",
+      "command": "npm run test",
+      "options": { "cwd": "${workspaceFolder}/apps/ui" },
       "isBackground": true,
       "problemMatcher": {
         "owner": "typescript",
         "pattern": "$tsc",
         "background": {
           "activeOnStart": true,
-          "beginsPattern": {
-            "regexp": "Changes detected"
-          },
-          "endsPattern": {
-            "regexp": "bundle generation (complete|failed)"
-          }
+          "beginsPattern": { "regexp": "Changes detected" },
+          "endsPattern": { "regexp": "bundle generation (complete|failed)" }
         }
       }
+    },
+    {
+      "label": "API: dev",
+      "type": "shell",
+      "command": "npm run start:dev",
+      "options": { "cwd": "${workspaceFolder}/apps/api" },
+      "isBackground": true,
+      "problemMatcher": "$tsc"
+    },
+    {
+      "label": "DB: up",
+      "type": "shell",
+      "command": "docker-compose up -d",
+      "options": { "cwd": "${workspaceFolder}" }
+    },
+    {
+      "label": "DB: down",
+      "type": "shell",
+      "command": "docker-compose down",
+      "options": { "cwd": "${workspaceFolder}" }
+    },
+    {
+      "label": "DB: migrate",
+      "type": "shell",
+      "command": "npm run db:migrate",
+      "options": { "cwd": "${workspaceFolder}/apps/api" }
     }
   ]
 }
