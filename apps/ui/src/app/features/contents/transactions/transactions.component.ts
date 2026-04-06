@@ -5,7 +5,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { selectMonthTabs } from '../../../core/store/selectors/transactions.selector';
-import { MonthTab, TransactionEntry } from '../../../models/transaction.models';
+import { MonthTab, TransactionEntry } from '../../../models/transaction';
 import { retrieveMatModalConfiguration } from '../../../core/constants/Modal';
 import { TransactionDetailModalComponent } from './transaction-detail-modal/transaction-detail-modal.component';
 import { TransactionsListGroupComponent } from './transactions-list-group/transactions-list-group.component';

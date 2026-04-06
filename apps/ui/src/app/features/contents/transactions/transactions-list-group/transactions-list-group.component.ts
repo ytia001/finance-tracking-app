@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
-import { DayGroup, TransactionEntry } from '../../../../models/transaction.models';
+import { DayGroup, TransactionEntry } from '../../../../models/transaction';
 
 @Component({
   selector: 'app-transactions-list-group',

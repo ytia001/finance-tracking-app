@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
-import { TransactionEntry } from '../../../../models/transaction.models';
+import { TransactionEntry } from '../../../../models/transaction';
 
 @Component({
   selector: 'app-transaction-detail-modal',

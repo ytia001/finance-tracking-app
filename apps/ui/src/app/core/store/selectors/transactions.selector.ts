@@ -2,7 +2,7 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { TRANSACTION_FEATURE_KEY, TransactionState } from '../reducers/transactions.reducer';
 import { DataEntry } from '../../../models/DataEntry';
 import { Category, CategoryConfigurations } from '../../constants/Category';
-import { DayGroup, MonthTab, TransactionEntry } from '../../../models/transaction.models';
+import { DayGroup, MonthTab, TransactionEntry } from '../../../models/transaction';
 import { DateTimeUtil } from '../../utils/date-id.util';
 
 // Interface used internally to keep track of accumulated data for each month to build MonthTabs

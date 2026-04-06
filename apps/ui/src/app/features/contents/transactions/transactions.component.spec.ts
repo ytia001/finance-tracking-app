@@ -3,7 +3,7 @@ import { TransactionsComponent } from './transactions.component';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { MemoizedSelector } from '@ngrx/store';
 import { selectMonthTabs } from '../../../core/store/selectors/transactions.selector';
-import { MonthTab } from '../../../models/transaction.models';
+import { MonthTab } from '../../../models/transaction';
 import { TestHelpers } from '../../../test-helpers';
 
 describe('TransactionsComponent', () => {

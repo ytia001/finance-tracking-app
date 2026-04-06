@@ -1,7 +1,7 @@
 import { Category } from './core/constants/Category';
 import { DataEntry } from './models/DataEntry';
 import { DataEntryRequest } from './features/main/entry-modal/entry-modal-control-service/entry-modal-control.service';
-import { DayGroup, MonthTab, TransactionEntry } from './models/transaction.models';
+import { DayGroup, MonthTab, TransactionEntry } from './models/transaction';
 
 export class TestHelpers {
   static createDateEntryRequest(props?: Partial<DataEntryRequest>): DataEntryRequest {

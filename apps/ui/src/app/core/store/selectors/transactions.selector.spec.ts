@@ -1,7 +1,7 @@
 import { Category } from '../../constants/Category';
 import { DataEntry } from '../../../models/DataEntry';
 import { buildMonthTabs } from './transactions.selector';
-import { MonthTab } from '../../../models/transaction.models';
+import { MonthTab } from '../../../models/transaction';
 import { TestHelpers } from '../../../test-helpers';
 
 describe('buildMonthTabs', () => {
