@@ -1,5 +1,6 @@
 import { authReducer, initialState, AuthState } from './auth.reducer';
 import { AuthActions } from '../actions/auth.actions';
+import { Action } from '@ngrx/store';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TestHelpers } from '../../../test-helpers';
 
@@ -8,7 +9,7 @@ describe('AuthReducer', () => {
 
   describe('unknown action', () => {
     it('should return the initial state', () => {
-      const action = { type: 'UNKNOWN' } as any;
+      const action = { type: 'UNKNOWN' } as Action;
       const state = authReducer(undefined, action);
       expect(state).toBe(initialState);
     });

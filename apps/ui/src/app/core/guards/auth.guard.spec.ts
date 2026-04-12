@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { AuthGuard } from './auth.guard';
 import { selectIsAuthenticated } from '../store/selectors/auth.selector';
@@ -40,13 +40,16 @@ describe('AuthGuard', () => {
 
   it('should redirect to login when not authenticated', (done) => {
     store.overrideSelector(selectIsAuthenticated, false);
-    routerSpy.createUrlTree.and.returnValue({} as any);
+    routerSpy.createUrlTree.and.returnValue('/login' as unknown as UrlTree);
     store.refreshState();
 
-    let result$: Observable<any>;
+    let result$: Observable<UrlTree>;
     TestBed.runInInjectionContext(() => {
       const guard = AuthGuard;
-      result$ = guard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot) as Observable<any>;
+      result$ = guard(
+        {} as ActivatedRouteSnapshot,
+        {} as RouterStateSnapshot,
+      ) as Observable<UrlTree>;
     });
 
     result$!.subscribe(() => {

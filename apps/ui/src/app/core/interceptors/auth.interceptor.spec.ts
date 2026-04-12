@@ -15,9 +15,7 @@ describe('authInterceptor', () => {
     });
 
     store = TestBed.inject(MockStore);
-    nextSpy = jasmine
-      .createSpy('next')
-      .and.callFake((req: HttpRequest<unknown>) => of({} as HttpEvent<unknown>));
+    nextSpy = jasmine.createSpy('next').and.callFake(() => of({} as HttpEvent<unknown>));
   });
 
   it('should add Authorization header when token is present', () => {

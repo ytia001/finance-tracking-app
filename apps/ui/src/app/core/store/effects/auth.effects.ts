@@ -3,7 +3,6 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, switchMap } from 'rxjs';
 import { AuthActions } from '../actions/auth.actions';
 import { AuthService } from '../../services/auth.service';
-import { LoginResponse } from '../../../models/auth';
 import { HttpErrorResponse } from '@angular/common/http';
 import { of } from 'rxjs';
 import { ToastMessages } from '../../constants/Toast';

@@ -6,7 +6,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AuthEffects } from './auth.effects';
 import { AuthActions } from '../actions/auth.actions';
 import { AuthService } from '../../services/auth.service';
-import { ToastMessages } from '../../constants/Toast';
 import { LoginCredentials } from '../../../models/auth';
 
 describe('AuthEffects', () => {
