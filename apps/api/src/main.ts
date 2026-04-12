@@ -9,6 +9,9 @@ import { Reflector } from '@nestjs/core';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Set global API prefix — all routes will be under /api
+  app.setGlobalPrefix('api');
+
   // Apply JWT guard globally — all endpoints require authentication by default
   // Use @Public() decorator to skip auth for specific routes (login, register, etc.)
   app.useGlobalGuards(new JwtAuthGuard(new Reflector()));

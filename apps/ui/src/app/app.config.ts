@@ -19,12 +19,13 @@ import { provideToastr } from 'ngx-toastr';
 import { toastrConfig } from './core/constants/Toast';
 import { appReducers } from './core/store/app/app.reducer';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { apiPrefixInterceptor } from './core/interceptors/api-prefix.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withInterceptors([apiPrefixInterceptor, authInterceptor])),
     provideStore(appReducers),
     provideEffects([MainEffects, ToastEffects, AuthEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
