@@ -27,7 +27,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    * This method only shapes what user data gets attached to request.user.
    * Re-checking the database here is optional (e.g., to verify user still exists).
    */
-  async validate(payload: any) {
+  override async validate(payload: any) {
     return {
       userId: payload.sub,
       email: payload.email,

@@ -1,8 +1,8 @@
 import { Controller, Post, Body, UseGuards, Request, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { Roles } from './decorators/roles.decorator';
+import { Public } from './decorators/public.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { RegisterDto } from './dto/auth.dto';
 import { AuthenticatedUser } from '../models/auth';
@@ -11,11 +11,13 @@ import { AuthenticatedUser } from '../models/auth';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @Public()
   @Post('register')
   async register(@Body() createUserDto: RegisterDto) {
     return this.authService.register(createUserDto);
   }
 
+  @Public()
   @UseGuards(AuthGuard('local'))
   @Post('login')
   async login(@Request() req: Express.Request) {
@@ -24,14 +26,13 @@ export class AuthController {
     return this.authService.login(req.user as AuthenticatedUser);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(RolesGuard)
   @Roles('admin')
   @Get('admin-only')
   async adminOnly() {
     return { message: 'Welcome, Admin!' };
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getProfile(@Request() req: Express.Request) {
     return req.user;

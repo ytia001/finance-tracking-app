@@ -26,7 +26,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
    * It only extracts email/password from the request body.
    * You MUST manually verify them against your database here.
    */
-  async validate(email: string, password: string): Promise<any> {
+  override async validate(email: string, password: string): Promise<any> {
     const user = await this.authService.validateUser(email, password);
     if (!user) {
       throw new UnauthorizedException();
