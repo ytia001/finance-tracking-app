@@ -91,7 +91,12 @@ export class AuthService {
     };
 
     return {
-      accessToken: this.jwtService.sign(payload)
+      accessToken: this.jwtService.sign(payload),
+      user: {
+        userId: user.id,
+        email: user.email,
+        roles: user.roles
+      }
     };
   }
 }

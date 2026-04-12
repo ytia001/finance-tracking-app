@@ -17,4 +17,9 @@ export class RegisterDto {
 
 export class LoginResponseDto {
   accessToken!: string;
+  user!: {
+    userId: number;
+    email: string;
+    roles: string[];
+  };
 }
