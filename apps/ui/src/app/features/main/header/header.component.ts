@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -10,11 +10,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
-  @Output()
-  sideNavClicked = new EventEmitter();
+  @Input() isAuthenticated = false;
 
-  @Output()
-  addFinanceClicked = new EventEmitter();
+  @Output() sideNavClicked = new EventEmitter();
+
+  @Output() addFinanceClicked = new EventEmitter();
+
+  @Output() signInClicked = new EventEmitter();
 
   toggleSideNav(): void {
     this.sideNavClicked.emit();
@@ -22,5 +24,9 @@ export class HeaderComponent {
 
   clickAddFinanceButton(): void {
     this.addFinanceClicked.emit();
+  }
+
+  clickSignInButton(): void {
+    this.signInClicked.emit();
   }
 }

@@ -1,0 +1,80 @@
+<div class="login-modal-container">
+  <div class="login-header">
+    <div class="logo-container">
+      <mat-icon class="logo-icon">account_balance_wallet</mat-icon>
+    </div>
+    <h1>Finance Tracker</h1>
+    <p class="subtitle">Sign in to your account</p>
+  </div>
+
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email</mat-label>
+      <input
+        matInput
+        formControlName="email"
+        type="email"
+        autocomplete="email"
+        placeholder="Enter your email"
+      />
+      <mat-icon matPrefix class="input-icon">email</mat-icon>
+      @if (loginForm.get('email')?.hasError('required')) {
+        <mat-error>Email is required</mat-error>
+      }
+      @if (loginForm.get('email')?.hasError('email')) {
+        <mat-error>Please enter a valid email</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        formControlName="password"
+        type="password"
+        autocomplete="current-password"
+        placeholder="Enter your password"
+      />
+      <mat-icon matPrefix class="input-icon">lock</mat-icon>
+      @if (loginForm.get('password')?.hasError('required')) {
+        <mat-error>Password is required</mat-error>
+      }
+      @if (loginForm.get('password')?.hasError('minlength')) {
+        <mat-error>Password must be at least 8 characters</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="forgot-password">
+      <a href="#">Forgot password?</a>
+    </div>
+
+    @if (loading()) {
+      <mat-progress-bar mode="indeterminate" class="loading-bar"></mat-progress-bar>
+    }
+
+    @if (error()) {
+      <div class="error-message">
+        <mat-icon>error</mat-icon>
+        <span>{{ error() }}</span>
+      </div>
+    }
+
+    <div class="dialog-actions">
+      <button mat-button type="button" (click)="closeDialog()">Cancel</button>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="loginForm.invalid || loading()"
+      >
+        @if (loading()) {
+          <span>Signing in...</span>
+        } @else {
+          <span>Sign In</span>
+        }
+      </button>
+    </div>
+  </form>
+
+  <p class="signup-link">Don't have an account? <a href="#">Sign up</a></p>
+</div>

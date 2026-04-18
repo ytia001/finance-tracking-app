@@ -2,15 +2,11 @@ import { Routes } from '@angular/router';
 import { MainComponent } from './features/main/main.component';
 import { BreakdownComponent } from './features/contents/breakdown/breakdown.component';
 import { ConfigurationComponent } from './features/contents/configuration/configuration.component';
-import { LoginComponent } from './features/auth/login/login.component';
-import { AuthGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
-  { path: 'login', component: LoginComponent },
   {
     path: '',
     component: MainComponent,
-    canActivate: [AuthGuard],
     children: [
       //Lazy feature store
       {

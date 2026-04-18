@@ -1,0 +1,166 @@
+@use '@angular/material' as mat;
+
+$primary: #002542;
+$primary-container: #1b3b5a;
+$on-primary: #ffffff;
+$on-primary-container: #d6e6f0;
+
+$secondary: #4a6268;
+$secondary-container: #cde8ee;
+$on-secondary: #ffffff;
+$on-secondary-container: #072228;
+
+$tertiary: #4a6072;
+$tertiary-container: #1e3d4c;
+$on-tertiary: #ffffff;
+$on-tertiary-container: #cfe5ff;
+
+$error: #ba1a1a;
+$error-container: #ffdad6;
+$on-error: #ffffff;
+$on-error-container: #410002;
+
+$surface: #faf9fc;
+$surface-variant: #eeedf0;
+$surface-container-lowest: #ffffff;
+$surface-container-low: #eeedf0;
+$surface-container: #e4e2e7;
+$surface-container-high: #d9d7dc;
+$surface-container-highest: #cecbc7;
+$on-surface: #1a1c1e;
+$on-surface-variant: #42474e;
+
+$background: #faf9fc;
+$on-background: #1a1c1e;
+
+$outline: #73777f;
+$outline-variant: rgba(115, 119, 127, 0.15);
+
+$success: #2e7d32;
+$success-container: #c8e6c9;
+$on-success: #ffffff;
+
+$warning: #6b5a00;
+$warning-container: #f7ebc5;
+$on-warning: #ffffff;
+
+:root {
+  --color-primary: #{$primary};
+  --color-primary-container: #{$primary-container};
+  --color-on-primary: #{$on-primary};
+  --color-on-primary-container: #{$on-primary-container};
+
+  --color-secondary: #{$secondary};
+  --color-secondary-container: #{$secondary-container};
+  --color-on-secondary: #{$on-secondary};
+  --color-on-secondary-container: #{$on-secondary-container};
+
+  --color-tertiary: #{$tertiary};
+  --color-tertiary-container: #{$tertiary-container};
+  --color-on-tertiary: #{$on-tertiary};
+  --color-on-tertiary-container: #{$on-tertiary-container};
+
+  --color-error: #{$error};
+  --color-error-container: #{$error-container};
+  --color-on-error: #{$on-error};
+  --color-on-error-container: #{$on-error-container};
+
+  --color-surface: #{$surface};
+  --color-surface-variant: #{$surface-variant};
+  --color-surface-container-lowest: #{$surface-container-lowest};
+  --color-surface-container-low: #{$surface-container-low};
+  --color-surface-container: #{$surface-container};
+  --color-surface-container-high: #{$surface-container-high};
+  --color-surface-container-highest: #{$surface-container-highest};
+  --color-on-surface: #{$on-surface};
+  --color-on-surface-variant: #{$on-surface-variant};
+
+  --color-background: #{$background};
+  --color-on-background: #{$on-background};
+
+  --color-outline: #{$outline};
+  --color-outline-variant: #{$outline-variant};
+
+  --color-success: #{$success};
+  --color-success-container: #{$success-container};
+  --color-on-success: #{$on-success};
+
+  --color-warning: #{$warning};
+  --color-warning-container: #{$warning-container};
+  --color-on-warning: #{$on-warning};
+}
+
+@mixin primary-gradient {
+  background: linear-gradient(135deg, $primary 0%, $primary-container 100%);
+}
+
+@mixin glass-surface($opacity: 0.7) {
+  background: rgba($surface-variant, $opacity);
+  backdrop-filter: blur(20px);
+}
+
+@mixin ambient-shadow {
+  box-shadow: 0 0 32px rgba($on-surface, 0.04);
+}
+
+@mixin button-primary {
+  @include primary-gradient;
+  color: $on-primary;
+  border-radius: 12px;
+  border: none;
+  font-weight: 600;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba($primary, 0.4);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    background: $outline;
+    color: $on-surface-variant;
+  }
+}
+
+@mixin button-secondary {
+  background: $surface-container-high;
+  color: $on-surface;
+  border-radius: 12px;
+  border: none;
+  font-weight: 500;
+}
+
+@mixin button-tertiary {
+  background: transparent;
+  color: $tertiary;
+  border-radius: 12px;
+  border: none;
+  font-weight: 500;
+}
+
+@mixin card-elevated {
+  background: $surface-container-lowest;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+@mixin input-field {
+  background: $surface-container-low;
+  border-radius: 8px;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.2s ease;
+
+  &:focus-within {
+    border-bottom-color: $primary;
+  }
+}
+
+@mixin ghost-border {
+  border: 1px solid $outline-variant;
+}

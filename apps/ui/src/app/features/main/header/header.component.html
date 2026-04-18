@@ -6,5 +6,13 @@
 
   <span class="spacer"></span>
 
-  <button matButton="tonal" (click)="clickAddFinanceButton()">Add Finances</button>
+  @if (isAuthenticated) {
+    <button matButton="tonal" (click)="clickAddFinanceButton()">Add Finances</button>
+  } @else {
+    <button matButton="tonal" (click)="clickAddFinanceButton()" disabled>Add Finances</button>
+  }
+
+  <button mat-raised-button class="sign-in-button" (click)="clickSignInButton()">
+    {{ isAuthenticated ? 'Sign Out' : 'Sign In' }}
+  </button>
 </mat-toolbar>
