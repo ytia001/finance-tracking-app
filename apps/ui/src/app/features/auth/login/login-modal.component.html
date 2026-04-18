@@ -45,7 +45,7 @@
     </mat-form-field>
 
     <div class="forgot-password">
-      <a href="#">Forgot password?</a>
+      <button type="button" class="link-button">Forgot password?</button>
     </div>
 
     @if (loading()) {
@@ -60,7 +60,9 @@
     }
 
     <div class="dialog-actions">
-      <button mat-button type="button" (click)="closeDialog()">Cancel</button>
+      <button mat-button type="button" (click)="closeDialog()" [disabled]="loading()">
+        Cancel
+      </button>
       <button
         mat-raised-button
         color="primary"
@@ -76,5 +78,10 @@
     </div>
   </form>
 
-  <p class="signup-link">Don't have an account? <a href="#">Sign up</a></p>
+  <p class="signup-link">
+    Don't have an account?
+    <button type="button" class="link-button" (click)="onSwitchToRegister()">
+      Sign up
+    </button>
+  </p>
 </div>

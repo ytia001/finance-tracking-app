@@ -4,6 +4,14 @@ export interface LoginCredentials {
   password: string;
 }
 
+/** Registration credentials sent from the frontend to the backend */
+export interface RegisterCredentials {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}
+
 /** User profile returned in the login response */
 export interface UserProfile {
   userId: number;
@@ -15,4 +23,10 @@ export interface UserProfile {
 export interface LoginResponse {
   accessToken: string;
   user: UserProfile;
+}
+
+/** Registration response from the backend */
+export interface RegisterResponse {
+  id: number;
+  email: string;
 }

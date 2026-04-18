@@ -27,7 +27,31 @@ export class AuthEffects {
             of(
               AuthActions.loginFailure({
                 error,
-                failureMessage: error.error?.message || ToastMessages.AUTH_MESSAGES.LOGIN_FAILURE,
+                failureMessage: ToastMessages.AUTH_MESSAGES.LOGIN_FAILURE,
+              }),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  register$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.register),
+      switchMap(({ data }) =>
+        this.authService.register(data).pipe(
+          map((response) =>
+            AuthActions.registerSuccess({
+              id: response.id,
+              email: response.email,
+            }),
+          ),
+          catchError((error: HttpErrorResponse) =>
+            of(
+              AuthActions.registerFailure({
+                error,
+                failureMessage: ToastMessages.AUTH_MESSAGES.REGISTER_FAILURE,
               }),
             ),
           ),

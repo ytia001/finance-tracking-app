@@ -15,5 +15,6 @@ export const ToastMessages = {
   },
   AUTH_MESSAGES: {
     LOGIN_FAILURE: 'Login failed. Please try again.',
+    REGISTER_FAILURE: 'Registration failed. Please try again.',
   },
 };

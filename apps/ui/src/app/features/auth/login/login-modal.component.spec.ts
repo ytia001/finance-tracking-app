@@ -62,12 +62,17 @@ describe('LoginModalComponent', () => {
     expect(dialogRefSpy.close).toHaveBeenCalledWith(null);
   });
 
-  it('should close dialog and dispatch login when saveDialog is called with valid form', () => {
+  it('should dispatch login when saveDialog is called with valid form', () => {
     spyOn(store, 'dispatch');
     component.loginForm.patchValue({ email: 'test@test.com', password: 'password123' });
     component.saveDialog();
-    expect(store.dispatch).toHaveBeenCalled();
-    expect(dialogRefSpy.close).toHaveBeenCalledWith(true);
+    expect(store.dispatch).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        type: '[Auth] Login',
+        email: 'test@test.com',
+        password: 'password123',
+      }),
+    );
   });
 
   it('should not dispatch login when form is invalid', () => {
@@ -75,5 +80,11 @@ describe('LoginModalComponent', () => {
     component.loginForm.patchValue({ email: 'invalid', password: '' });
     component.saveDialog();
     expect(store.dispatch).not.toHaveBeenCalled();
+  });
+
+  it('should emit switchToRegister event when onSwitchToRegister is called', () => {
+    spyOn(component.switchToRegister, 'emit');
+    component.onSwitchToRegister();
+    expect(component.switchToRegister.emit).toHaveBeenCalled();
   });
 });

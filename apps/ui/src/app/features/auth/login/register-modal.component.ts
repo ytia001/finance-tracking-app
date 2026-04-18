@@ -2,6 +2,7 @@ import { Component, EventEmitter, effect, inject, Output } from '@angular/core';
 import { ReactiveFormsModule, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { RegisterCredentials } from '../../../models/auth';
 import { AuthActions } from '../../../core/store/actions/auth.actions';
 import {
   selectAuthLoading,
@@ -17,7 +18,7 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { AbstractModalDialogComponent } from '../../../shared/modal-dialog/modal-dialog.component';
 
 @Component({
-  selector: 'app-login-modal',
+  selector: 'app-register-modal',
   standalone: true,
   imports: [
     ReactiveFormsModule,
@@ -28,17 +29,19 @@ import { AbstractModalDialogComponent } from '../../../shared/modal-dialog/modal
     MatIconModule,
     MatDialogModule,
   ],
-  templateUrl: './login-modal.component.html',
-  styleUrl: './login-modal.component.scss',
+  templateUrl: './register-modal.component.html',
+  styleUrl: './register-modal.component.scss',
 })
-export class LoginModalComponent extends AbstractModalDialogComponent {
+export class RegisterModalComponent extends AbstractModalDialogComponent {
   private store = inject(Store);
   private fb = inject(NonNullableFormBuilder);
-  private matDialogRef = inject(MatDialogRef<LoginModalComponent>);
+  private matDialogRef = inject(MatDialogRef<RegisterModalComponent>);
 
-  @Output() switchToRegister = new EventEmitter<void>();
+  @Output() switchToLogin = new EventEmitter<void>();
 
-  loginForm = this.fb.group({
+  registerForm = this.fb.group({
+    firstName: ['', [Validators.required, Validators.minLength(2)]],
+    lastName: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8)]],
   });
@@ -63,20 +66,24 @@ export class LoginModalComponent extends AbstractModalDialogComponent {
   }
 
   override saveDialog(): void {
-    if (this.loginForm.invalid) return;
+    if (this.registerForm.invalid) return;
 
-    const { email, password } = this.loginForm.value;
-    this.store.dispatch(
-      AuthActions.login({ email: email!.trim().toLowerCase(), password: password! }),
-    );
+    const { email, password, firstName, lastName } = this.registerForm.value;
+    const data: RegisterCredentials = {
+      email: email!.trim().toLowerCase(),
+      password: password!,
+      firstName: firstName!.trim(),
+      lastName: lastName!.trim(),
+    };
+    this.store.dispatch(AuthActions.register({ data }));
   }
 
   onSubmit(): void {
     this.saveDialog();
   }
 
-  onSwitchToRegister(): void {
-    this.switchToRegister.emit();
+  onSwitchToLogin(): void {
+    this.switchToLogin.emit();
     this.closeDialog();
   }
 }

@@ -37,3 +37,10 @@ body {
   margin: 0;
   height: 100%;
 }
+
+.auth-modal-panel {
+  .mat-mdc-dialog-container {
+    --mdc-dialog-container-padding: 0;
+    --mdc-dialog-container-shape: 16px;
+  }
+}
