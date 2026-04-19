@@ -3,6 +3,8 @@ import {
   provideBrowserGlobalErrorListeners,
   isDevMode,
   importProvidersFrom,
+  inject,
+  provideAppInitializer,
 } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
@@ -20,6 +22,9 @@ import { toastrConfig } from './core/constants/Toast';
 import { appReducers } from './core/store/app/app.reducer';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { apiPrefixInterceptor } from './core/interceptors/api-prefix.interceptor';
+import { JwtTokenService } from './core/services/jwt-token.service';
+import { AuthActions } from './core/store/actions/auth.actions';
+import { Store } from '@ngrx/store';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -32,5 +37,17 @@ export const appConfig: ApplicationConfig = {
     provideCharts(withDefaultRegisterables()),
     importProvidersFrom(MatNativeDateModule),
     provideToastr(toastrConfig),
+    provideAppInitializer(() => {
+      const store = inject(Store);
+      const jwtService = inject(JwtTokenService);
+      if (jwtService.hasToken()) {
+        const user = jwtService.getUser();
+        const token = jwtService.getToken();
+        if (token && user) {
+          store.dispatch(AuthActions.restoreAuth({ token, user }));
+        }
+      }
+      return Promise.resolve();
+    }),
   ],
 };

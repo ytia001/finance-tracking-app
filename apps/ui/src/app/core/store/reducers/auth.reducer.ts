@@ -43,7 +43,25 @@ const authReducerInternal = createReducer(
     loading: false,
     error: error.message,
   })),
+  on(AuthActions.registerSuccess, (state) => ({
+    ...state,
+    loading: false,
+    error: null,
+  })),
+  on(AuthActions.registerFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error: error.message,
+  })),
   on(AuthActions.logout, () => initialState),
+  on(AuthActions.restoreAuth, (state, { token, user }) => ({
+    ...state,
+    token,
+    user,
+    isAuthenticated: true,
+    loading: false,
+    error: null,
+  })),
 );
 
 export function authReducer(state: AuthState | undefined, action: Action) {

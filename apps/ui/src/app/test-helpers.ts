@@ -9,6 +9,8 @@ export class TestHelpers {
     return {
       userId: 1,
       email: 'test@test.com',
+      firstName: 'Test',
+      lastName: 'User',
       roles: ['user'],
       ...props,
     };

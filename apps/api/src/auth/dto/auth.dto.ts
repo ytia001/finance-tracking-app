@@ -19,6 +19,8 @@ export class LoginResponseDto {
   accessToken!: string;
   user!: {
     userId: number;
+    firstName: string;
+    lastName: string;
     email: string;
     roles: string[];
   };

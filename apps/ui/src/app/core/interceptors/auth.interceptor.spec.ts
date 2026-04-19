@@ -1,26 +1,24 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpRequest, HttpEvent, HttpHandlerFn } from '@angular/common/http';
-import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { authInterceptor } from './auth.interceptor';
-import { selectAuthToken } from '../store/selectors/auth.selector';
+import { JwtTokenService } from '../services/jwt-token.service';
 
 describe('authInterceptor', () => {
-  let store: MockStore;
   let nextSpy: jasmine.Spy<HttpHandlerFn>;
+  let jwtServiceSpy: jasmine.SpyObj<JwtTokenService>;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [provideMockStore()],
-    });
-
-    store = TestBed.inject(MockStore);
+    jwtServiceSpy = jasmine.createSpyObj('JwtTokenService', ['getToken']);
     nextSpy = jasmine.createSpy('next').and.callFake(() => of({} as HttpEvent<unknown>));
+
+    TestBed.configureTestingModule({
+      providers: [{ provide: JwtTokenService, useValue: jwtServiceSpy }],
+    });
   });
 
   it('should add Authorization header when token is present', () => {
-    store.overrideSelector(selectAuthToken, 'test-token');
-    store.refreshState();
+    jwtServiceSpy.getToken.and.returnValue('test-token');
 
     const req = new HttpRequest('GET', '/api/test');
     TestBed.runInInjectionContext(() => authInterceptor(req, nextSpy));
@@ -31,8 +29,7 @@ describe('authInterceptor', () => {
   });
 
   it('should not add Authorization header when no token', () => {
-    store.overrideSelector(selectAuthToken, null);
-    store.refreshState();
+    jwtServiceSpy.getToken.and.returnValue(null);
 
     const req = new HttpRequest('GET', '/api/test');
     TestBed.runInInjectionContext(() => authInterceptor(req, nextSpy));

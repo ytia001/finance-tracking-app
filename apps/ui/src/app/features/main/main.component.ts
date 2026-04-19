@@ -7,13 +7,16 @@ import { Store } from '@ngrx/store';
 import { HeaderComponent } from './header/header.component';
 import { MainActions } from '../../core/store/actions/main.actions';
 import { AuthActions } from '../../core/store/actions/auth.actions';
-import { selectIsAuthenticated } from '../../core/store/selectors/auth.selector';
+import { selectIsAuthenticated, selectAuthUser } from '../../core/store/selectors/auth.selector';
 import { LoginModalComponent } from '../auth/login/login-modal.component';
 import { RegisterModalComponent } from '../auth/login/register-modal.component';
 import { ModalConstants } from '../../core/constants/Modal';
+import { Subscription } from 'rxjs';
+import { UntilDestroy } from '@ngneat/until-destroy';
 
 type AuthModalDialog = LoginModalComponent | RegisterModalComponent;
 
+@UntilDestroy({ arrayName: 'subscriptions' })
 @Component({
   selector: 'app-main',
   imports: [RouterModule, MatSidenavModule, MatButtonModule, HeaderComponent],
@@ -27,7 +30,13 @@ export class MainComponent {
   private dialog = inject(MatDialog);
 
   isAuthenticated = this.store.selectSignal(selectIsAuthenticated);
+  user = this.store.selectSignal(selectAuthUser);
   private currentDialogRef: MatDialogRef<AuthModalDialog> | null = null;
+  private subscriptions: Subscription[] = [];
+
+  handleLogoutClicked(): void {
+    this.store.dispatch(AuthActions.logout());
+  }
 
   toggleSideNav(): void {
     this.sideNavComp.toggle();
@@ -51,42 +60,40 @@ export class MainComponent {
 
   openLoginModal(): void {
     this.closeCurrentDialog();
-    const dialogRef = this.dialog.open(
-      LoginModalComponent,
-      ModalConstants.AUTH_MODAL_CONFIG,
-    );
+    const dialogRef = this.dialog.open(LoginModalComponent, ModalConstants.AUTH_MODAL_CONFIG);
 
     this.currentDialogRef = dialogRef;
 
-    dialogRef.componentInstance.switchToRegister.subscribe(() => {
+    const switchSub = dialogRef.componentInstance.switchToRegister.subscribe(() => {
       this.openRegisterModal();
     });
+    this.subscriptions.push(switchSub);
 
-    dialogRef.afterClosed().subscribe((result) => {
+    const closeSub = dialogRef.afterClosed().subscribe((result) => {
       if (result === 'register') {
         this.openRegisterModal();
       }
     });
+    this.subscriptions.push(closeSub);
   }
 
   openRegisterModal(): void {
     this.closeCurrentDialog();
-    const dialogRef = this.dialog.open(
-      RegisterModalComponent,
-      ModalConstants.AUTH_MODAL_CONFIG,
-    );
+    const dialogRef = this.dialog.open(RegisterModalComponent, ModalConstants.AUTH_MODAL_CONFIG);
 
     this.currentDialogRef = dialogRef;
 
-    dialogRef.componentInstance.switchToLogin.subscribe(() => {
+    const switchSub = dialogRef.componentInstance.switchToLogin.subscribe(() => {
       this.openLoginModal();
     });
+    this.subscriptions.push(switchSub);
 
-    dialogRef.afterClosed().subscribe((result) => {
+    const closeSub2 = dialogRef.afterClosed().subscribe((result) => {
       if (result === 'login') {
         this.openLoginModal();
       }
     });
+    this.subscriptions.push(closeSub2);
   }
 
   switchToRegisterModal(): void {
