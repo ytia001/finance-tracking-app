@@ -27,7 +27,7 @@ jobs:
           node-version: 24
 
       - name: Install UI dependencies
-        run: npm --prefix apps/ui ci
+        run: npm --prefix apps/ui ci --legacy-peer-deps
 
       - name: Run lint
         run: npm --prefix apps/ui run lint
@@ -64,7 +64,7 @@ jobs:
           node-version: 24
 
       - name: Install API dependencies
-        run: npm --prefix apps/api ci
+        run: npm --prefix apps/api ci --legacy-peer-deps
 
       - name: Build API
         run: npm --prefix apps/api run build
