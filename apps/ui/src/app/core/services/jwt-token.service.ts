@@ -1,4 +1,5 @@
 import { Injectable, signal } from '@angular/core';
+import { UserProfile } from '../../models/auth';
 
 const TOKEN_KEY = 'auth_token';
 const USER_KEY = 'auth_user';
@@ -6,7 +7,7 @@ const USER_KEY = 'auth_user';
 @Injectable({ providedIn: 'root' })
 export class JwtTokenService {
   private tokenSignal = signal<string | null>(null);
-  private userSignal = signal<any | null>(null);
+  private userSignal = signal<UserProfile | null>(null);
 
   token = this.tokenSignal.asReadonly();
   user = this.userSignal.asReadonly();
@@ -24,12 +25,12 @@ export class JwtTokenService {
     return this.tokenSignal();
   }
 
-  setUser(user: any): void {
+  setUser(user: UserProfile): void {
     this.userSignal.set(user);
     localStorage.setItem(USER_KEY, JSON.stringify(user));
   }
 
-  getUser(): any | null {
+  getUser(): UserProfile | null {
     return this.userSignal();
   }
 
