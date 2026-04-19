@@ -7,6 +7,10 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MainActions } from '../../core/store/actions/main.actions';
 
+import { ModalService } from '../../core/services/modal.service';
+import { AUTH_FEATURE_KEY, AuthState } from '../../core/store/reducers/auth.reducer';
+import { LoginModalComponent } from '../../features/auth/login/login-modal.component';
+
 @Component({ standalone: true, template: '' })
 class DummyDashboardComponent {}
 
@@ -14,25 +18,42 @@ describe('MainComponent', () => {
   let component: MainComponent;
   let fixture: ComponentFixture<MainComponent>;
   let store: MockStore;
+  let dispatchSpy: jasmine.Spy;
   let sidenavSpy: jasmine.SpyObj<MatSidenav>;
+  let modalServiceSpy: jasmine.SpyObj<ModalService>;
+
+  const initialAuthState: AuthState = {
+    token: null,
+    user: null,
+    isAuthenticated: false,
+    loading: false,
+    error: null,
+  };
 
   beforeEach(async () => {
     sidenavSpy = jasmine.createSpyObj('MatSidenav', ['toggle']);
+    modalServiceSpy = jasmine.createSpyObj('ModalService', ['openModal']);
 
     await TestBed.configureTestingModule({
       imports: [MainComponent],
       providers: [
         provideRouter([{ path: 'dashboard', component: DummyDashboardComponent }]),
-        provideMockStore(),
+        provideMockStore({
+          initialState: {
+            [AUTH_FEATURE_KEY]: initialAuthState,
+          },
+        }),
+        { provide: ModalService, useValue: modalServiceSpy },
       ],
     }).compileComponents();
 
+    store = TestBed.inject(MockStore);
+    dispatchSpy = spyOn(store, 'dispatch').and.callThrough();
+
     fixture = TestBed.createComponent(MainComponent);
     component = fixture.componentInstance;
-    store = TestBed.inject(MockStore);
-    fixture.detectChanges(); // run lifecycle hooks, Angular sets @ViewChild
+    fixture.detectChanges();
 
-    // Manually assign the spy after detectChanges() because Angular overwrites @ViewChild properties during ngAfterViewInit
     component.sideNavComp = sidenavSpy;
 
     await fixture.whenStable();
@@ -53,10 +74,25 @@ describe('MainComponent', () => {
   });
 
   it('should dispatch openAddDataEntryModal action when handleAddFinanceClicked is called', () => {
-    spyOn(store, 'dispatch');
+    store.setState({
+      [AUTH_FEATURE_KEY]: {
+        ...initialAuthState,
+        isAuthenticated: true,
+      },
+    });
+    store.refreshState();
+    fixture.detectChanges();
+    dispatchSpy.calls.reset();
 
     component.handleAddFinanceClicked();
 
-    expect(store.dispatch).toHaveBeenCalledWith(MainActions.openAddDataEntryModal());
+    expect(dispatchSpy).toHaveBeenCalledWith(MainActions.openAddDataEntryModal());
+  });
+
+  it('should open login modal when handleSignInClicked is called', () => {
+    fixture.detectChanges();
+    component.handleSignInClicked();
+
+    expect(modalServiceSpy.openModal).toHaveBeenCalledWith(LoginModalComponent);
   });
 });

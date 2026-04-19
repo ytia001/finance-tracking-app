@@ -4,6 +4,7 @@ import { catchError, map, switchMap, tap } from 'rxjs';
 import { AuthActions } from '../actions/auth.actions';
 import { AuthService } from '../../services/auth.service';
 import { JwtTokenService } from '../../services/jwt-token.service';
+import { ModalService } from '../../services/modal.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { of } from 'rxjs';
 import { ToastMessages } from '../../constants/Toast';
@@ -13,6 +14,7 @@ export class AuthEffects {
   private actions$ = inject(Actions);
   private authService = inject(AuthService);
   private jwtService = inject(JwtTokenService);
+  private modalService = inject(ModalService);
 
   login$ = createEffect(() =>
     this.actions$.pipe(
@@ -46,6 +48,7 @@ export class AuthEffects {
         tap(({ token, user }) => {
           this.jwtService.setToken(token);
           this.jwtService.setUser(user);
+          this.modalService.closeModal(true);
         }),
       ),
     { dispatch: false },
@@ -76,6 +79,17 @@ export class AuthEffects {
     ),
   );
 
+  registerSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.registerSuccess),
+        tap(() => {
+          this.modalService.closeModal(true);
+        }),
+      ),
+    { dispatch: false },
+  );
+
   logout$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.logout),
@@ -88,6 +102,17 @@ export class AuthEffects {
         }),
       ),
     ),
+  );
+
+  logoutSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.logoutSuccess),
+        tap(() => {
+          window.location.reload();
+        }),
+      ),
+    { dispatch: false },
   );
 
   checkAuth$ = createEffect(() =>

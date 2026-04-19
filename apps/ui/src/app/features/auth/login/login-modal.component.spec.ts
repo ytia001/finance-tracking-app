@@ -5,15 +5,19 @@ import { Store, StoreModule } from '@ngrx/store';
 import { LoginModalComponent } from './login-modal.component';
 import { AUTH_FEATURE_KEY, authReducer } from '../../../core/store/reducers/auth.reducer';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ModalService } from '../../../core/services/modal.service';
+import { RegisterModalComponent } from './register-modal.component';
 
 describe('LoginModalComponent', () => {
   let component: LoginModalComponent;
   let fixture: ComponentFixture<LoginModalComponent>;
   let store: Store;
   let dialogRefSpy: jasmine.SpyObj<MatDialogRef<LoginModalComponent>>;
+  let modalServiceSpy: jasmine.SpyObj<ModalService>;
 
   beforeEach(async () => {
     dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
+    modalServiceSpy = jasmine.createSpyObj('ModalService', ['openModal', 'closeModal']);
 
     await TestBed.configureTestingModule({
       imports: [
@@ -24,7 +28,10 @@ describe('LoginModalComponent', () => {
         StoreModule.forFeature(AUTH_FEATURE_KEY, authReducer),
         LoginModalComponent,
       ],
-      providers: [{ provide: MatDialogRef, useValue: dialogRefSpy }],
+      providers: [
+        { provide: MatDialogRef, useValue: dialogRefSpy },
+        { provide: ModalService, useValue: modalServiceSpy },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoginModalComponent);
@@ -82,9 +89,9 @@ describe('LoginModalComponent', () => {
     expect(store.dispatch).not.toHaveBeenCalled();
   });
 
-  it('should emit switchToRegister event when onSwitchToRegister is called', () => {
-    spyOn(component.switchToRegister, 'emit');
+  it('should close modal with register and open register modal when onSwitchToRegister is called', () => {
     component.onSwitchToRegister();
-    expect(component.switchToRegister.emit).toHaveBeenCalled();
+    expect(modalServiceSpy.closeModal).toHaveBeenCalledWith('register');
+    expect(modalServiceSpy.openModal).toHaveBeenCalledWith(RegisterModalComponent);
   });
 });

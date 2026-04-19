@@ -27,6 +27,11 @@ const authReducerInternal = createReducer(
     loading: true,
     error: null,
   })),
+  on(AuthActions.register, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
   on(AuthActions.loginSuccess, (state, { token, user }) => ({
     ...state,
     token,

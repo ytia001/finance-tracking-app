@@ -36,6 +36,7 @@ describe('AuthReducer', () => {
         AuthActions.loginSuccess({
           token: 'abc123',
           user: testUser,
+          successMessage: 'Login successful',
         }),
       );
       expect(state.token).toBe('abc123');

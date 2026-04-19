@@ -46,15 +46,11 @@ export class EntriesService {
     return { success: true };
   }
 
-  /**
-   * Converts a DB row to the shape the Angular frontend expects:
-   *  { id: number, amount: string, date: number (Unix ms), category: string }
-   */
   private toResponse(entry: DataEntryRow) {
     return {
       id: entry.id,
-      amount: entry.amount, // Drizzle returns numeric as string — matches DataEntry.amount
-      date: entry.date.getTime(), // Unix ms timestamp — matches DataEntry.date
+      amount: entry.amount,
+      date: entry.date.getTime(),
       category: entry.category
     };
   }

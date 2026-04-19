@@ -5,15 +5,19 @@ import { Store, StoreModule } from '@ngrx/store';
 import { RegisterModalComponent } from './register-modal.component';
 import { AUTH_FEATURE_KEY, authReducer } from '../../../core/store/reducers/auth.reducer';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ModalService } from '../../../core/services/modal.service';
+import { LoginModalComponent } from './login-modal.component';
 
 describe('RegisterModalComponent', () => {
   let component: RegisterModalComponent;
   let fixture: ComponentFixture<RegisterModalComponent>;
   let store: Store;
   let dialogRefSpy: jasmine.SpyObj<MatDialogRef<RegisterModalComponent>>;
+  let modalServiceSpy: jasmine.SpyObj<ModalService>;
 
   beforeEach(async () => {
     dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
+    modalServiceSpy = jasmine.createSpyObj('ModalService', ['openModal', 'closeModal']);
 
     await TestBed.configureTestingModule({
       imports: [
@@ -26,6 +30,7 @@ describe('RegisterModalComponent', () => {
       ],
       providers: [
         { provide: MatDialogRef, useValue: dialogRefSpy },
+        { provide: ModalService, useValue: modalServiceSpy },
       ],
     }).compileComponents();
 
@@ -81,10 +86,12 @@ describe('RegisterModalComponent', () => {
     expect(store.dispatch).toHaveBeenCalledWith(
       jasmine.objectContaining({
         type: '[Auth] Register',
-        email: 'test@test.com',
-        password: 'password123',
-        firstName: 'John',
-        lastName: 'Doe',
+        data: {
+          email: 'test@test.com',
+          password: 'password123',
+          firstName: 'John',
+          lastName: 'Doe',
+        },
       }),
     );
   });
@@ -100,30 +107,22 @@ describe('RegisterModalComponent', () => {
     spyOn(store, 'dispatch');
     component.registerForm.patchValue({ firstName: 'John', lastName: 'Doe', email: 'TEST@TEST.COM', password: 'password123' });
     component.saveDialog();
-    expect(store.dispatch).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        type: '[Auth] Register',
-        email: 'test@test.com',
-      }),
-    );
+    const dispatchedAction = (store.dispatch as jasmine.Spy).calls.mostRecent().args[0];
+    expect(dispatchedAction.data.email).toBe('test@test.com');
   });
 
   it('should trim names before dispatching', () => {
     spyOn(store, 'dispatch');
     component.registerForm.patchValue({ firstName: '  John  ', lastName: '  Doe  ', email: 'test@test.com', password: 'password123' });
     component.saveDialog();
-    expect(store.dispatch).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        type: '[Auth] Register',
-        firstName: 'John',
-        lastName: 'Doe',
-      }),
-    );
+    const dispatchedAction = (store.dispatch as jasmine.Spy).calls.mostRecent().args[0];
+    expect(dispatchedAction.data.firstName).toBe('John');
+    expect(dispatchedAction.data.lastName).toBe('Doe');
   });
 
-  it('should emit switchToLogin event when onSwitchToLogin is called', () => {
-    spyOn(component.switchToLogin, 'emit');
+  it('should close modal with login and open login modal when onSwitchToLogin is called', () => {
     component.onSwitchToLogin();
-    expect(component.switchToLogin.emit).toHaveBeenCalled();
+    expect(modalServiceSpy.closeModal).toHaveBeenCalledWith('login');
+    expect(modalServiceSpy.openModal).toHaveBeenCalledWith(LoginModalComponent);
   });
 });
