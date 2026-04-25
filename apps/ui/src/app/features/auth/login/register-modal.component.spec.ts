@@ -50,27 +50,52 @@ describe('RegisterModalComponent', () => {
   });
 
   it('should have an invalid form with short firstName', () => {
-    component.registerForm.patchValue({ firstName: 'J', lastName: 'Doe', email: 'test@test.com', password: 'password123' });
+    component.registerForm.patchValue({
+      firstName: 'J',
+      lastName: 'Doe',
+      email: 'test@test.com',
+      password: 'password123',
+    });
     expect(component.registerForm.get('firstName')?.valid).toBeFalse();
   });
 
   it('should have an invalid form with short lastName', () => {
-    component.registerForm.patchValue({ firstName: 'John', lastName: 'D', email: 'test@test.com', password: 'password123' });
+    component.registerForm.patchValue({
+      firstName: 'John',
+      lastName: 'D',
+      email: 'test@test.com',
+      password: 'password123',
+    });
     expect(component.registerForm.get('lastName')?.valid).toBeFalse();
   });
 
   it('should have an invalid form with invalid email', () => {
-    component.registerForm.patchValue({ firstName: 'John', lastName: 'Doe', email: 'not-an-email', password: 'password123' });
+    component.registerForm.patchValue({
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'not-an-email',
+      password: 'password123',
+    });
     expect(component.registerForm.get('email')?.valid).toBeFalse();
   });
 
   it('should have an invalid form with short password', () => {
-    component.registerForm.patchValue({ firstName: 'John', lastName: 'Doe', email: 'test@test.com', password: 'short' });
+    component.registerForm.patchValue({
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'test@test.com',
+      password: 'short',
+    });
     expect(component.registerForm.get('password')?.valid).toBeFalse();
   });
 
   it('should have a valid form with correct values', () => {
-    component.registerForm.patchValue({ firstName: 'John', lastName: 'Doe', email: 'test@test.com', password: 'password123' });
+    component.registerForm.patchValue({
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'test@test.com',
+      password: 'password123',
+    });
     expect(component.registerForm.valid).toBeTrue();
   });
 
@@ -81,7 +106,12 @@ describe('RegisterModalComponent', () => {
 
   it('should dispatch register action when saveDialog is called with valid form', () => {
     spyOn(store, 'dispatch');
-    component.registerForm.patchValue({ firstName: 'John', lastName: 'Doe', email: 'test@test.com', password: 'password123' });
+    component.registerForm.patchValue({
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'test@test.com',
+      password: 'password123',
+    });
     component.saveDialog();
     expect(store.dispatch).toHaveBeenCalledWith(
       jasmine.objectContaining({
@@ -98,14 +128,24 @@ describe('RegisterModalComponent', () => {
 
   it('should not dispatch register when form is invalid', () => {
     spyOn(store, 'dispatch');
-    component.registerForm.patchValue({ firstName: '', lastName: '', email: 'invalid', password: '' });
+    component.registerForm.patchValue({
+      firstName: '',
+      lastName: '',
+      email: 'invalid',
+      password: '',
+    });
     component.saveDialog();
     expect(store.dispatch).not.toHaveBeenCalled();
   });
 
   it('should lowercase email before dispatching', () => {
     spyOn(store, 'dispatch');
-    component.registerForm.patchValue({ firstName: 'John', lastName: 'Doe', email: 'TEST@TEST.COM', password: 'password123' });
+    component.registerForm.patchValue({
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'TEST@TEST.COM',
+      password: 'password123',
+    });
     component.saveDialog();
     const dispatchedAction = (store.dispatch as jasmine.Spy).calls.mostRecent().args[0];
     expect(dispatchedAction.data.email).toBe('test@test.com');
@@ -113,7 +153,12 @@ describe('RegisterModalComponent', () => {
 
   it('should trim names before dispatching', () => {
     spyOn(store, 'dispatch');
-    component.registerForm.patchValue({ firstName: '  John  ', lastName: '  Doe  ', email: 'test@test.com', password: 'password123' });
+    component.registerForm.patchValue({
+      firstName: '  John  ',
+      lastName: '  Doe  ',
+      email: 'test@test.com',
+      password: 'password123',
+    });
     component.saveDialog();
     const dispatchedAction = (store.dispatch as jasmine.Spy).calls.mostRecent().args[0];
     expect(dispatchedAction.data.firstName).toBe('John');

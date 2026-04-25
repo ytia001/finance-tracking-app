@@ -7,7 +7,10 @@ export class ModalService {
   private dialog = inject(MatDialog);
   private currentDialogRef: MatDialogRef<unknown> | null = null;
 
-  openModal<T>(component: Type<T>, config = ModalConstants.AUTH_MODAL_CONFIG): MatDialogRef<unknown> {
+  openModal<T>(
+    component: Type<T>,
+    config = ModalConstants.AUTH_MODAL_CONFIG,
+  ): MatDialogRef<unknown> {
     this.closeCurrentDialog();
     const dialogRef = this.dialog.open(component, config);
     this.currentDialogRef = dialogRef;

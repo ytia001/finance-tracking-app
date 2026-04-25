@@ -20,7 +20,14 @@ describe('AuthEffects', () => {
 
   beforeEach(() => {
     authServiceSpy = jasmine.createSpyObj('AuthService', ['login', 'register']);
-    jwtServiceSpy = jasmine.createSpyObj('JwtTokenService', ['setToken', 'setUser', 'clearToken', 'getToken', 'getUser', 'hasToken']);
+    jwtServiceSpy = jasmine.createSpyObj('JwtTokenService', [
+      'setToken',
+      'setUser',
+      'clearToken',
+      'getToken',
+      'getUser',
+      'hasToken',
+    ]);
     modalServiceSpy = jasmine.createSpyObj('ModalService', ['closeModal']);
 
     TestBed.configureTestingModule({
@@ -41,7 +48,13 @@ describe('AuthEffects', () => {
       const loginPayload: LoginCredentials = { email: 'test@test.com', password: 'password123' };
       const response = {
         accessToken: 'abc123',
-        user: { id: 1, email: 'test@test.com', firstName: 'Test', lastName: 'User', roles: ['user'] },
+        user: {
+          id: 1,
+          email: 'test@test.com',
+          firstName: 'Test',
+          lastName: 'User',
+          roles: ['user'],
+        },
       };
       authServiceSpy.login.and.returnValue(of(response));
 
@@ -79,9 +92,21 @@ describe('AuthEffects', () => {
   describe('loginSuccess$', () => {
     it('should store token and user in JwtTokenService', (done) => {
       const token = 'abc123';
-      const user = { userId: 1, email: 'test@test.com', firstName: 'Test', lastName: 'User', roles: ['user'] };
+      const user = {
+        id: 1,
+        email: 'test@test.com',
+        firstName: 'Test',
+        lastName: 'User',
+        roles: ['user'],
+      };
 
-      actions$ = of(AuthActions.loginSuccess({ token, user, successMessage: ToastMessages.AUTH_MESSAGES.LOGIN_SUCCESS }));
+      actions$ = of(
+        AuthActions.loginSuccess({
+          token,
+          user,
+          successMessage: ToastMessages.AUTH_MESSAGES.LOGIN_SUCCESS,
+        }),
+      );
 
       effects.loginSuccess$.subscribe(() => {
         expect(jwtServiceSpy.setToken).toHaveBeenCalledWith(token);
@@ -140,7 +165,13 @@ describe('AuthEffects', () => {
 
   describe('registerSuccess$', () => {
     it('should close modal on successful registration', (done) => {
-      actions$ = of(AuthActions.registerSuccess({ id: 2, email: 'new@test.com', successMessage: ToastMessages.AUTH_MESSAGES.REGISTER_SUCCESS }));
+      actions$ = of(
+        AuthActions.registerSuccess({
+          id: 2,
+          email: 'new@test.com',
+          successMessage: ToastMessages.AUTH_MESSAGES.REGISTER_SUCCESS,
+        }),
+      );
 
       effects.registerSuccess$.subscribe(() => {
         expect(modalServiceSpy.closeModal).toHaveBeenCalledWith(true);
@@ -156,7 +187,7 @@ describe('AuthEffects', () => {
       effects.logout$.subscribe((action) => {
         expect(jwtServiceSpy.clearToken).toHaveBeenCalled();
         expect(action).toEqual(
-          AuthActions.logoutSuccess({ successMessage: ToastMessages.AUTH_MESSAGES.LOGOUT_SUCCESS })
+          AuthActions.logoutSuccess({ successMessage: ToastMessages.AUTH_MESSAGES.LOGOUT_SUCCESS }),
         );
         done();
       });
@@ -167,7 +198,13 @@ describe('AuthEffects', () => {
     it('should dispatch restoreAuth when token and user exist', () => {
       jwtServiceSpy.hasToken.and.returnValue(true);
       jwtServiceSpy.getToken.and.returnValue('abc123');
-      jwtServiceSpy.getUser.and.returnValue({ userId: 1, email: 'test@test.com', firstName: 'Test', lastName: 'User', roles: ['user'] });
+      jwtServiceSpy.getUser.and.returnValue({
+        id: 1,
+        email: 'test@test.com',
+        firstName: 'Test',
+        lastName: 'User',
+        roles: ['user'],
+      });
 
       actions$ = of(AuthActions.checkAuth());
 
@@ -175,8 +212,14 @@ describe('AuthEffects', () => {
         expect(action).toEqual(
           AuthActions.restoreAuth({
             token: 'abc123',
-            user: { id: 1, email: 'test@test.com', firstName: 'Test', lastName: 'User', roles: ['user'] },
-          })
+            user: {
+              id: 1,
+              email: 'test@test.com',
+              firstName: 'Test',
+              lastName: 'User',
+              roles: ['user'],
+            },
+          }),
         );
       });
     });

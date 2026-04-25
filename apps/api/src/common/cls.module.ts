@@ -1,7 +1,6 @@
-import { Module, NestInterceptor, ExecutionContext, Injectable, CallHandler } from '@nestjs/common';
+import { NestInterceptor, ExecutionContext, Injectable, CallHandler } from '@nestjs/common';
 import { ClsService, ClsModule } from 'nestjs-cls';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 export const USER_ID_KEY = 'userId';
 
