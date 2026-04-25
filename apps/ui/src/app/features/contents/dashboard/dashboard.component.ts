@@ -1,8 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatIconModule } from '@angular/material/icon';
+import { TuiIcon } from '@taiga-ui/core';
 import { PieChartComponent } from './charts/Pie/PieChart.component';
 import { LineChartComponent } from './charts/Line/LineChart.component';
 import { BarChartComponent } from './charts/Bar/BarChart.component';
@@ -10,14 +9,7 @@ import { selectDashboardEntries } from '../../../core/store/selectors/dashboard.
 
 @Component({
   selector: 'app-dashboard',
-  imports: [
-    AsyncPipe,
-    MatExpansionModule,
-    MatIconModule,
-    PieChartComponent,
-    LineChartComponent,
-    BarChartComponent,
-  ],
+  imports: [AsyncPipe, TuiIcon, PieChartComponent, LineChartComponent, BarChartComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })

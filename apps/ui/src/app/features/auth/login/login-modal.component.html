@@ -1,71 +1,63 @@
 <div class="login-modal-container">
   <div class="login-header">
     <div class="logo-container">
-      <mat-icon class="logo-icon">account_balance_wallet</mat-icon>
+      <tui-icon icon="@tui.account_balance_wallet" class="logo-icon" />
     </div>
     <h1>Finance Tracker</h1>
     <p class="subtitle">Sign in to your account</p>
   </div>
 
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Email</mat-label>
+    <tui-textfield class="full-width">
+      <ng-template tui-label>Email</ng-template>
       <input
-        matInput
+        tuiInput
         formControlName="email"
         type="email"
         autocomplete="email"
         placeholder="Enter your email"
       />
-      <mat-icon matPrefix class="input-icon">email</mat-icon>
-      @if (loginForm.get('email')?.hasError('required')) {
-        <mat-error>Email is required</mat-error>
-      }
-      @if (loginForm.get('email')?.hasError('email')) {
-        <mat-error>Please enter a valid email</mat-error>
-      }
-    </mat-form-field>
+      <span tui-prefix>
+        <tui-icon icon="@tui.mail" class="input-icon" />
+      </span>
+    </tui-textfield>
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Password</mat-label>
+    <tui-textfield class="full-width">
+      <ng-template tui-label>Password</ng-template>
       <input
-        matInput
+        tuiInput
         formControlName="password"
         type="password"
         autocomplete="current-password"
         placeholder="Enter your password"
       />
-      <mat-icon matPrefix class="input-icon">lock</mat-icon>
-      @if (loginForm.get('password')?.hasError('required')) {
-        <mat-error>Password is required</mat-error>
-      }
-      @if (loginForm.get('password')?.hasError('minlength')) {
-        <mat-error>Password must be at least 8 characters</mat-error>
-      }
-    </mat-form-field>
+      <span tui-prefix>
+        <tui-icon icon="@tui.lock" class="input-icon" />
+      </span>
+    </tui-textfield>
 
     <div class="forgot-password">
       <button type="button" class="link-button">Forgot password?</button>
     </div>
 
     @if (loading()) {
-      <mat-progress-bar mode="indeterminate" class="loading-bar"></mat-progress-bar>
+      <tui-loader class="loading-bar" />
     }
 
     @if (error()) {
       <div class="error-message">
-        <mat-icon>error</mat-icon>
+        <tui-icon icon="@tui.alert-circle" />
         <span>{{ error() }}</span>
       </div>
     }
 
     <div class="dialog-actions">
-      <button mat-button type="button" (click)="closeDialog()" [disabled]="loading()">
+      <button tui-button type="button" (click)="closeDialog()" [disabled]="loading()">
         Cancel
       </button>
       <button
-        mat-raised-button
-        color="primary"
+        tui-button
+        appearance="primary"
         type="submit"
         [disabled]="loginForm.invalid || loading()"
       >

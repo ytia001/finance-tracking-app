@@ -3,36 +3,19 @@ import { ReactiveFormsModule, NonNullableFormBuilder, Validators } from '@angula
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../core/store/actions/auth.actions';
 import { selectAuthLoading, selectAuthError } from '../../../core/store/selectors/auth.selector';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { TuiTextfield, TuiLoader, TuiIcon } from '@taiga-ui/core';
 import { AbstractModalDialogComponent } from '../../../shared/modal-dialog/modal-dialog.component';
-import { ModalService } from '../../../core/services/modal.service';
-import { RegisterModalComponent } from './register-modal.component';
 
 @Component({
   selector: 'app-login-modal',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatProgressBarModule,
-    MatIconModule,
-    MatDialogModule,
-  ],
+  imports: [ReactiveFormsModule, TuiTextfield, TuiLoader, TuiIcon],
   templateUrl: './login-modal.component.html',
   styleUrl: './login-modal.component.scss',
 })
 export class LoginModalComponent extends AbstractModalDialogComponent {
   private store = inject(Store);
   private fb = inject(NonNullableFormBuilder);
-  private matDialogRef = inject(MatDialogRef<LoginModalComponent>);
-  private modalService = inject(ModalService);
 
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -43,7 +26,7 @@ export class LoginModalComponent extends AbstractModalDialogComponent {
   error = this.store.selectSignal(selectAuthError);
 
   override closeDialog(): void {
-    this.matDialogRef.close(null);
+    // Required by AbstractModalDialogComponent
   }
 
   override saveDialog(): void {
@@ -60,7 +43,6 @@ export class LoginModalComponent extends AbstractModalDialogComponent {
   }
 
   onSwitchToRegister(): void {
-    this.modalService.closeModal('register');
-    this.modalService.openModal(RegisterModalComponent);
+    // TODO: Implement register modal switch
   }
 }

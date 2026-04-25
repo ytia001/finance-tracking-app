@@ -1,33 +1,26 @@
 import { Injectable, inject, Type } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ModalConstants } from '../constants/Modal';
+import { TuiDialogService } from '@taiga-ui/core';
+import { ModalConstants, DialogConfig } from '../constants/Modal';
+import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ModalService {
-  private dialog = inject(MatDialog);
-  private currentDialogRef: MatDialogRef<unknown> | null = null;
+  private dialogService = inject(TuiDialogService);
 
   openModal<T>(
-    component: Type<T>,
-    config = ModalConstants.AUTH_MODAL_CONFIG,
-  ): MatDialogRef<unknown> {
-    this.closeCurrentDialog();
-    const dialogRef = this.dialog.open(component, config);
-    this.currentDialogRef = dialogRef;
-    return dialogRef;
+    component: Type<T> | PolymorpheusComponent<T>,
+    config: DialogConfig = ModalConstants.AUTH_MODAL_CONFIG,
+    data?: object,
+  ): Observable<unknown> {
+    return this.dialogService.open(component, {
+      ...config,
+      label: config.label || '',
+      data,
+    });
   }
 
-  closeModal<T>(result?: T): void {
-    if (this.currentDialogRef) {
-      this.currentDialogRef.close(result);
-      this.currentDialogRef = null;
-    }
-  }
-
-  private closeCurrentDialog(): void {
-    if (this.currentDialogRef) {
-      this.currentDialogRef.close();
-      this.currentDialogRef = null;
-    }
+  closeModal(): void {
+    // TODO: Implement modal close via TuiDialogService
   }
 }

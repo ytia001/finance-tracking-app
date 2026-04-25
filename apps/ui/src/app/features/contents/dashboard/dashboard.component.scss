@@ -1,6 +1,53 @@
-.empty-icon {
-  font-size: 64px;
-  width: 64px;
-  height: 64px;
-  opacity: 0.4;
+@use '../../../core/styles/design-system.scss' as ds;
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 16px;
+  color: ds.$on-surface-variant;
+
+  .empty-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    opacity: 0.4;
+  }
+
+  .title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 16px 0 8px 0;
+    color: ds.$on-surface;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    margin: 0;
+  }
+}
+
+.accordion-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.panel-title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  span:first-child {
+    font-weight: 600;
+    color: ds.$on-surface;
+  }
+
+  .panel-description {
+    font-size: 12px;
+    color: ds.$on-surface-variant;
+    font-weight: 400;
+  }
 }

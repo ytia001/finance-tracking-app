@@ -1,5 +1,3 @@
-import { MatDialogConfig } from '@angular/material/dialog';
-
 export class ModalConstants {
   static readonly MODAL_WIDTH_PERCENTAGE = '45%';
   static readonly MODAL_HEIGHT_PERCENTAGE = '65%';
@@ -10,21 +8,24 @@ export class ModalConstants {
     width: ModalConstants.LOGIN_MODAL_WIDTH_PERCENTAGE,
     maxWidth: ModalConstants.LOGIN_MODAL_MAX_WIDTH,
     maxHeight: '90vh',
-    disableClose: true,
-    panelClass: 'auth-modal-panel',
+    dismissible: true,
   };
 }
 
-export function retrieveMatModalConfiguration<T>(
-  data: T,
-  customConfigs: Partial<MatDialogConfig<T>> = {},
-): MatDialogConfig<T> {
+export interface DialogConfig {
+  width?: string;
+  maxWidth?: string;
+  maxHeight?: string;
+  dismissible?: boolean;
+  label?: string;
+}
+
+export function createDialogConfig(custom: DialogConfig = {}): DialogConfig {
   return {
     width: ModalConstants.MODAL_WIDTH_PERCENTAGE,
-    height: ModalConstants.MODAL_HEIGHT_PERCENTAGE,
-    disableClose: false,
-    autoFocus: true,
-    data: data,
-    ...customConfigs,
+    maxHeight: ModalConstants.MODAL_HEIGHT_PERCENTAGE,
+    dismissible: false,
+    label: '',
+    ...custom,
   };
 }

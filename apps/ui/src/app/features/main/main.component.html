@@ -1,30 +1,27 @@
-<mat-sidenav-container class="app-container">
-  <mat-sidenav #sidenav opened mode="side" class="sidenav">
+<div class="app-layout">
+  <aside class="sidenav">
     <nav class="nav-links">
-      <a mat-button routerLink="/dashboard" class="link">Dashboard</a>
-      <a mat-button routerLink="/breakdown" class="link">Breakdown</a>
-      <a mat-button routerLink="/transactions" class="link">Transactions</a>
-      <a mat-button routerLink="/configuration" class="link">Configuration</a>
+      <a routerLink="/dashboard" class="link">Dashboard</a>
+      <a routerLink="/breakdown" class="link">Breakdown</a>
+      <a routerLink="/transactions" class="link">Transactions</a>
+      <a routerLink="/configuration" class="link">Configuration</a>
     </nav>
-  </mat-sidenav>
+  </aside>
 
-  <mat-sidenav-content class="main">
-    <!-- Header -->
+  <div class="main">
     <app-header
       [isAuthenticated]="isAuthenticated()"
       [userName]="user()?.firstName ?? null"
-      (sideNavClicked)="sidenav.toggle()"
+      (sideNavClicked)="toggleSideNav()"
       (addFinanceClicked)="handleAddFinanceClicked()"
       (signInClicked)="handleSignInClicked()"
       (logoutClicked)="handleLogoutClicked()"
     ></app-header>
 
-    <!-- Routed Page -->
     <div class="content">
       <router-outlet></router-outlet>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">Finance Tracker Footer</footer>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+  </div>
+</div>

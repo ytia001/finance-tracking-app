@@ -1,25 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EntryModalComponent } from './entry-modal.component';
-import { MatDialogRef } from '@angular/material/dialog';
-import { DataEntryRequest } from './entry-modal-control-service/entry-modal-control.service';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Category } from '../../../core/constants/Category';
 
 describe('EntryModalComponent', () => {
   let component: EntryModalComponent;
   let fixture: ComponentFixture<EntryModalComponent>;
-  let matDialogRefSpy: jasmine.SpyObj<MatDialogRef<EntryModalComponent>>;
+  let closeFnSpy: jasmine.Spy;
 
   beforeEach(async () => {
-    matDialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
+    closeFnSpy = jasmine.createSpy('closeFn');
 
     await TestBed.configureTestingModule({
-      imports: [EntryModalComponent],
-      providers: [{ provide: MatDialogRef, useValue: matDialogRefSpy }],
+      imports: [EntryModalComponent, ReactiveFormsModule, FormsModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EntryModalComponent);
     component = fixture.componentInstance;
+    component.closeFn = closeFnSpy;
     fixture.detectChanges();
     await fixture.whenStable();
   });
@@ -28,26 +26,17 @@ describe('EntryModalComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call dialogRef.close() when closeDialog is called', () => {
+  it('should call closeFn with null when closeDialog is called', () => {
     component.closeDialog();
-    expect(matDialogRefSpy.close).toHaveBeenCalledWith(null);
+    expect(closeFnSpy).toHaveBeenCalledWith(null);
   });
 
-  it('should call dialogRef.close() with data when saveDialog is called', () => {
-    component.entryFormGroup = new FormGroup({
-      category: new FormControl(Category.INCOME),
-      amount: new FormControl(100),
-      date: new FormControl(new Date('2024-01-01')),
-    });
-
-    fixture.detectChanges();
-
-    component.saveDialog();
-
-    expect(matDialogRefSpy.close).toHaveBeenCalledWith({
+  it('should have a valid form when required fields are filled', () => {
+    component.entryFormGroup.patchValue({
       category: Category.INCOME,
       amount: 100,
       date: new Date('2024-01-01'),
-    } as DataEntryRequest);
+    });
+    expect(component.entryFormGroup.valid).toBeTrue();
   });
 });

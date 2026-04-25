@@ -1,37 +1,29 @@
 import { AsyncPipe, CurrencyPipe, NgClass } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatTabsModule } from '@angular/material/tabs';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { selectMonthTabs } from '../../../core/store/selectors/transactions.selector';
 import { MonthTab, TransactionEntry } from '../../../models/transaction';
-import { retrieveMatModalConfiguration } from '../../../core/constants/Modal';
+import { createDialogConfig } from '../../../core/constants/Modal';
 import { TransactionDetailModalComponent } from './transaction-detail-modal/transaction-detail-modal.component';
 import { TransactionsListGroupComponent } from './transactions-list-group/transactions-list-group.component';
 import { MainResourceActions } from '../../../core/store/actions/resources/main.actions';
+import { ModalService } from '../../../core/services/modal.service';
 
 @Component({
   selector: 'app-transactions',
-  imports: [
-    AsyncPipe,
-    CurrencyPipe,
-    NgClass,
-    MatTabsModule,
-    MatDialogModule,
-    TransactionsListGroupComponent,
-  ],
+  imports: [AsyncPipe, CurrencyPipe, NgClass, TransactionsListGroupComponent],
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.scss',
 })
 export class TransactionsComponent implements OnInit {
   private store = inject(Store);
-  private dialog = inject(MatDialog);
+  private modalService = inject(ModalService);
 
   monthTabs$: Observable<MonthTab[]> = this.store.select(selectMonthTabs);
+  activeTab: string | null = null;
 
   ngOnInit(): void {
-    // Load all entries from the backend when this route activates
     this.store.dispatch(MainResourceActions.loadDataEntries());
   }
 
@@ -40,9 +32,12 @@ export class TransactionsComponent implements OnInit {
   }
 
   openDetail(entry: TransactionEntry): void {
-    this.dialog.open(
+    const dialogRef = this.modalService.openModal(
       TransactionDetailModalComponent,
-      retrieveMatModalConfiguration(entry, { width: '65%', height: '45%' }),
+      createDialogConfig({ width: '65%' }),
+      { entry },
     );
+
+    dialogRef.subscribe();
   }
 }

@@ -1,1 +1,63 @@
-// No custom styles needed — layout handled by Material dialog + Bootstrap utilities
+@use '../../../../core/styles/design-system.scss' as ds;
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  border-bottom: 1px solid ds.$outline-variant;
+
+  .category-icon {
+    font-size: 28px;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: ds.$on-surface;
+  }
+}
+
+.modal-content {
+  padding: 16px 24px;
+}
+
+.detail-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .label {
+    font-size: 0.875rem;
+    color: ds.$on-surface-variant;
+  }
+
+  .value {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: ds.$on-surface;
+  }
+}
+
+.text-success {
+  color: ds.$success;
+}
+
+.text-danger {
+  color: ds.$error;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid ds.$outline-variant;
+}

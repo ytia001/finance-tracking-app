@@ -1,51 +1,40 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { AbstractModalDialogComponent } from '../../../shared/modal-dialog/modal-dialog.component';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { EntryModalControlService } from './entry-modal-control-service/entry-modal-control.service';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatSelectOption } from '../../../models/MaterialModels';
-import { CategoryConfigurations } from '../../../core/constants/Category';
+import { TuiTextfield } from '@taiga-ui/core';
+import { CategoryConfigurations, Category } from '../../../core/constants/Category';
 
 @Component({
   selector: 'app-entry-modal',
-  imports: [
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatButtonModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-  ],
-  providers: [],
+  standalone: true,
+  imports: [ReactiveFormsModule, FormsModule, TuiTextfield],
   templateUrl: './entry-modal.component.html',
   styleUrl: './entry-modal.component.scss',
 })
 export class EntryModalComponent extends AbstractModalDialogComponent {
-  private matdialogRef = inject(MatDialogRef<EntryModalComponent, string | null>);
   private entryModalControlService = inject(EntryModalControlService);
+
+  @Input() closeFn: ((result: unknown) => void) | null = null;
 
   entryFormGroup: FormGroup = this.entryModalControlService.toFormGroup();
 
-  get categoryOptions(): MatSelectOption[] {
-    return Object.entries(CategoryConfigurations).map(([value, config]) => ({
-      value,
-      label: config.label,
-    }));
+  categoryOptions = Object.keys(CategoryConfigurations);
+
+  getCategoryLabel(value: string): string {
+    return CategoryConfigurations[value as Category]?.label || value;
   }
 
   override closeDialog(): void {
-    this.matdialogRef.close(null);
+    if (this.closeFn) {
+      this.closeFn(null);
+    }
   }
 
   override saveDialog(): void {
-    this.matdialogRef.close(this.entryModalControlService.toRequestPayload(this.entryFormGroup));
+    if (this.entryFormGroup.invalid) return;
+    if (this.closeFn) {
+      this.closeFn(this.entryModalControlService.toRequestPayload(this.entryFormGroup));
+    }
   }
 }

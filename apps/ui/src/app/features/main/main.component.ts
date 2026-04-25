@@ -1,6 +1,4 @@
-import { Component, inject, ViewChild } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { HeaderComponent } from './header/header.component';
@@ -14,25 +12,24 @@ import { UntilDestroy } from '@ngneat/until-destroy';
 @UntilDestroy({ arrayName: 'subscriptions' })
 @Component({
   selector: 'app-main',
-  imports: [RouterModule, MatSidenavModule, MatButtonModule, HeaderComponent],
+  imports: [RouterModule, HeaderComponent],
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
 })
 export class MainComponent {
-  @ViewChild('sidenav') sideNavComp!: MatSidenav;
-
   private store = inject(Store);
   private modalService = inject(ModalService);
 
+  sideNavOpen = true;
   isAuthenticated = this.store.selectSignal(selectIsAuthenticated);
   user = this.store.selectSignal(selectAuthUser);
 
-  handleLogoutClicked(): void {
-    this.store.dispatch(AuthActions.logout());
+  toggleSideNav(): void {
+    this.sideNavOpen = !this.sideNavOpen;
   }
 
-  toggleSideNav(): void {
-    this.sideNavComp.toggle();
+  handleLogoutClicked(): void {
+    this.store.dispatch(AuthActions.logout());
   }
 
   handleAddFinanceClicked(): void {

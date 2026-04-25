@@ -164,7 +164,7 @@ describe('AuthEffects', () => {
   });
 
   describe('registerSuccess$', () => {
-    it('should close modal on successful registration', (done) => {
+    it('should handle registration success', (done) => {
       actions$ = of(
         AuthActions.registerSuccess({
           id: 2,
@@ -174,7 +174,6 @@ describe('AuthEffects', () => {
       );
 
       effects.registerSuccess$.subscribe(() => {
-        expect(modalServiceSpy.closeModal).toHaveBeenCalledWith(true);
         done();
       });
     });

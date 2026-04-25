@@ -1,25 +1,23 @@
-<div class="px-3 py-1 text-muted small border-bottom bg-light">
+<div class="date-header">
   {{ dayGroup.dateId | date: 'fullDate' }}
 </div>
 
 @for (entry of dayGroup.entries; track entry.id) {
   <div
-    class="d-flex align-items-center px-3 py-2 border-bottom entry-row"
+    class="entry-row"
     role="button"
     tabindex="0"
     (click)="onEntryClick(entry)"
     (keyup.enter)="onEntryClick(entry)"
   >
-    <mat-icon class="me-3 flex-shrink-0" [ngClass]="isIncomeClass(entry)">
-      {{ entry.categoryIcon }}
-    </mat-icon>
+    <tui-icon [icon]="entry.categoryIcon" class="entry-icon" [ngClass]="isIncomeClass(entry)" />
 
-    <div class="flex-grow-1 overflow-hidden">
-      <div class="small fw-medium text-truncate">{{ entry.categoryLabel }}</div>
-      <div class="x-small text-muted">{{ entry.date | date: 'shortTime' }}</div>
+    <div class="entry-details">
+      <div class="entry-category">{{ entry.categoryLabel }}</div>
+      <div class="entry-time">{{ entry.date | date: 'shortTime' }}</div>
     </div>
 
-    <div class="ms-3 fw-semibold small flex-shrink-0" [ngClass]="isIncomeClass(entry)">
+    <div class="entry-amount" [ngClass]="isIncomeClass(entry)">
       {{ entry.isIncome ? '+' : '-' }}{{ entry.amount | currency }}
     </div>
   </div>

@@ -48,7 +48,6 @@ export class AuthEffects {
         tap(({ token, user }) => {
           this.jwtService.setToken(token);
           this.jwtService.setUser(user);
-          this.modalService.closeModal(true);
         }),
       ),
     { dispatch: false },
@@ -84,7 +83,7 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(AuthActions.registerSuccess),
         tap(() => {
-          this.modalService.closeModal(true);
+          // Registration success handling can be added here
         }),
       ),
     { dispatch: false },

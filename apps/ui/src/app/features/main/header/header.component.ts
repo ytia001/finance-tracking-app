@@ -1,12 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatMenuModule } from '@angular/material/menu';
+import { TuiButton, TuiIcon } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-header',
-  imports: [MatToolbarModule, MatIconModule, MatButtonModule, MatMenuModule],
+  imports: [TuiButton, TuiIcon],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })

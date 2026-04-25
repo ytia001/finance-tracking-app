@@ -1,36 +1,40 @@
 @let entries = (entries$ | async) ?? [];
 @if (!entries.length) {
-  <div
-    class="d-flex flex-column align-items-center justify-content-center text-center py-5 text-muted"
-  >
-    <mat-icon class="empty-icon">insert_chart</mat-icon>
-    <p class="fs-5 fw-semibold mt-3 mb-1">No data yet</p>
-    <p class="small mb-0">Add transactions to see your financial charts.</p>
+  <div class="empty-state">
+    <tui-icon icon="@tui.chart-pie" class="empty-icon" />
+    <p class="title">No data yet</p>
+    <p class="subtitle">Add transactions to see your financial charts.</p>
   </div>
 } @else {
-  <mat-accordion multi>
-    <mat-expansion-panel expanded>
-      <mat-expansion-panel-header>
-        <mat-panel-title>Spending Breakdown</mat-panel-title>
-        <mat-panel-description>Expenses by category</mat-panel-description>
-      </mat-expansion-panel-header>
-      <app-pie-chart [entries]="entries" />
-    </mat-expansion-panel>
+  <div class="charts-container">
+    <div class="chart-panel">
+      <div class="panel-header">
+        <span class="panel-title">Spending Breakdown</span>
+        <span class="panel-description">Expenses by category</span>
+      </div>
+      <div class="chart-content">
+        <app-pie-chart [entries]="entries" />
+      </div>
+    </div>
 
-    <mat-expansion-panel expanded>
-      <mat-expansion-panel-header>
-        <mat-panel-title>Income vs Expenses</mat-panel-title>
-        <mat-panel-description>Monthly trend over time</mat-panel-description>
-      </mat-expansion-panel-header>
-      <app-line-chart [entries]="entries" />
-    </mat-expansion-panel>
+    <div class="chart-panel">
+      <div class="panel-header">
+        <span class="panel-title">Income vs Expenses</span>
+        <span class="panel-description">Monthly trend over time</span>
+      </div>
+      <div class="chart-content">
+        <app-line-chart [entries]="entries" />
+      </div>
+    </div>
 
-    <mat-expansion-panel expanded>
-      <mat-expansion-panel-header>
-        <mat-panel-title>Monthly Overview</mat-panel-title>
-        <mat-panel-description>Income and expenses per month</mat-panel-description>
-      </mat-expansion-panel-header>
-      <app-bar-chart [entries]="entries" />
-    </mat-expansion-panel>
-  </mat-accordion>
+    <div class="chart-panel">
+      <div class="panel-header">
+        <span class="panel-title">Monthly Overview</span>
+        <span class="panel-description">Income and expenses per month</span>
+      </div>
+      <div class="chart-content">
+        <app-bar-chart [entries]="entries" />
+      </div>
+    </div>
+  </div>
 }

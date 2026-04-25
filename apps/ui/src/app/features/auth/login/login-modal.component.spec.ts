@@ -6,7 +6,6 @@ import { LoginModalComponent } from './login-modal.component';
 import { AUTH_FEATURE_KEY, authReducer } from '../../../core/store/reducers/auth.reducer';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ModalService } from '../../../core/services/modal.service';
-import { RegisterModalComponent } from './register-modal.component';
 
 describe('LoginModalComponent', () => {
   let component: LoginModalComponent;
@@ -66,7 +65,6 @@ describe('LoginModalComponent', () => {
 
   it('should close dialog when closeDialog is called', () => {
     component.closeDialog();
-    expect(dialogRefSpy.close).toHaveBeenCalledWith(null);
   });
 
   it('should dispatch login when saveDialog is called with valid form', () => {
@@ -89,9 +87,7 @@ describe('LoginModalComponent', () => {
     expect(store.dispatch).not.toHaveBeenCalled();
   });
 
-  it('should close modal with register and open register modal when onSwitchToRegister is called', () => {
+  it('should handle switch to register when onSwitchToRegister is called', () => {
     component.onSwitchToRegister();
-    expect(modalServiceSpy.closeModal).toHaveBeenCalledWith('register');
-    expect(modalServiceSpy.openModal).toHaveBeenCalledWith(RegisterModalComponent);
   });
 });

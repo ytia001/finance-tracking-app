@@ -1,12 +1,62 @@
+@use '../../../../core/styles/design-system.scss' as ds;
+
+.date-header {
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  color: ds.$on-surface-variant;
+  background: ds.$surface-container-low;
+  border-bottom: 1px solid ds.$outline-variant;
+}
+
 .entry-row {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
   cursor: pointer;
   transition: background-color 0.15s ease;
+  border-bottom: 1px solid ds.$outline-variant;
 
   &:hover {
     background-color: rgba(0, 0, 0, 0.04);
   }
+
+  .entry-icon {
+    margin-right: 12px;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .entry-details {
+    flex-grow: 1;
+    overflow: hidden;
+
+    .entry-category {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: ds.$on-surface;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .entry-time {
+      font-size: 0.75rem;
+      color: ds.$on-surface-variant;
+    }
+  }
+
+  .entry-amount {
+    margin-left: 12px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
 }
 
-.x-small {
-  font-size: 0.7rem;
+.text-success {
+  color: ds.$success;
+}
+
+.text-danger {
+  color: ds.$error;
 }

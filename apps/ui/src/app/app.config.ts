@@ -2,9 +2,9 @@ import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
   isDevMode,
-  importProvidersFrom,
   inject,
   provideAppInitializer,
+  importProvidersFrom,
 } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
@@ -13,7 +13,6 @@ import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
-import { MatNativeDateModule } from '@angular/material/core';
 import { MainEffects } from './core/store/effects/main.effects';
 import { ToastEffects } from './core/store/effects/toast.effects';
 import { AuthEffects } from './core/store/effects/auth.effects';
@@ -25,9 +24,11 @@ import { apiPrefixInterceptor } from './core/interceptors/api-prefix.interceptor
 import { JwtTokenService } from './core/services/jwt-token.service';
 import { AuthActions } from './core/store/actions/auth.actions';
 import { Store } from '@ngrx/store';
+import { provideTaiga } from '@taiga-ui/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    importProvidersFrom(),
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(withInterceptors([apiPrefixInterceptor, authInterceptor])),
@@ -35,7 +36,7 @@ export const appConfig: ApplicationConfig = {
     provideEffects([MainEffects, ToastEffects, AuthEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideCharts(withDefaultRegisterables()),
-    importProvidersFrom(MatNativeDateModule),
+    provideTaiga(),
     provideToastr(toastrConfig),
     provideAppInitializer(() => {
       const store = inject(Store);
