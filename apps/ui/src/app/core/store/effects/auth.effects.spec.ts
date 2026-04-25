@@ -41,7 +41,7 @@ describe('AuthEffects', () => {
       const loginPayload: LoginCredentials = { email: 'test@test.com', password: 'password123' };
       const response = {
         accessToken: 'abc123',
-        user: { userId: 1, email: 'test@test.com', firstName: 'Test', lastName: 'User', roles: ['user'] },
+        user: { id: 1, email: 'test@test.com', firstName: 'Test', lastName: 'User', roles: ['user'] },
       };
       authServiceSpy.login.and.returnValue(of(response));
 
@@ -175,7 +175,7 @@ describe('AuthEffects', () => {
         expect(action).toEqual(
           AuthActions.restoreAuth({
             token: 'abc123',
-            user: { userId: 1, email: 'test@test.com', firstName: 'Test', lastName: 'User', roles: ['user'] },
+            user: { id: 1, email: 'test@test.com', firstName: 'Test', lastName: 'User', roles: ['user'] },
           })
         );
       });

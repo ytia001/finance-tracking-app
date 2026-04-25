@@ -95,7 +95,7 @@ export class AuthService {
     return {
       accessToken: this.jwtService.sign(payload),
       user: {
-        userId: user.id,
+        id: user.id,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,

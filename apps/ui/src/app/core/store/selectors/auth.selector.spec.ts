@@ -10,7 +10,7 @@ import { AuthState } from '../reducers/auth.reducer';
 describe('auth selectors', () => {
   const testState: AuthState = {
     token: 'test-token-123',
-    user: { userId: 1, email: 'test@test.com', firstName: 'Test', lastName: 'User', roles: ['user'] },
+    user: { id: 1, email: 'test@test.com', firstName: 'Test', lastName: 'User', roles: ['user'] },
     isAuthenticated: true,
     loading: false,
     error: null,

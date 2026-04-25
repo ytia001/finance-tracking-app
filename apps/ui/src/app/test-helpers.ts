@@ -7,7 +7,7 @@ import { UserProfile } from './models/auth';
 export class TestHelpers {
   static makeUserProfile(props: Partial<UserProfile> = {}): UserProfile {
     return {
-      userId: 1,
+      id: 1,
       email: 'test@test.com',
       firstName: 'Test',
       lastName: 'User',

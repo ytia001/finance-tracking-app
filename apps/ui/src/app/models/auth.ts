@@ -14,7 +14,7 @@ export interface RegisterCredentials {
 
 /** User profile returned in the login response */
 export interface UserProfile {
-  userId: number;
+  id: number;
   email: string;
   firstName: string;
   lastName: string;

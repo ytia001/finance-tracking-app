@@ -5,9 +5,14 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { Reflector } from '@nestjs/core';
+import { ClsService } from 'nestjs-cls';
+import { TenantInterceptor } from './common/cls.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const clsService = app.get(ClsService);
+  app.useGlobalInterceptors(new TenantInterceptor(clsService));
 
   // Set global API prefix — all routes will be under /api
   app.setGlobalPrefix('api');

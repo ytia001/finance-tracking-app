@@ -1,17 +1,26 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { DRIZZLE, DrizzleDB } from '../db/db.module';
 import { dataEntries, DataEntryRow } from '../db/schema';
 import { CreateEntryDto } from './dto/create-entry.dto';
+import { BaseService } from '../common/base.service';
+import { ClsService } from 'nestjs-cls';
 
 @Injectable()
-export class EntriesService {
-  constructor(@Inject(DRIZZLE) private readonly db: DrizzleDB) {}
+export class EntriesService extends BaseService {
+  constructor(
+    @Inject(DRIZZLE) private readonly db: DrizzleDB,
+    protected readonly clsService: ClsService
+  ) {
+    super(clsService);
+  }
 
   async create(dto: CreateEntryDto) {
+    const userId = this.getUserId();
     const [entry] = await this.db
       .insert(dataEntries)
       .values({
+        userId,
         amount: dto.amount.toString(),
         date: new Date(dto.date),
         category: dto.category
@@ -22,25 +31,39 @@ export class EntriesService {
   }
 
   async findAll() {
-    const entries = await this.db.select().from(dataEntries).orderBy(dataEntries.date);
+    const userId = this.getUserId();
+    const entries = await this.db
+      .select()
+      .from(dataEntries)
+      .where(eq(dataEntries.userId, userId))
+      .orderBy(dataEntries.date);
 
     return entries.map((e) => this.toResponse(e));
   }
 
   async update(id: number, dto: Partial<CreateEntryDto>) {
+    const userId = this.getUserId();
     const values: Partial<typeof dataEntries.$inferInsert> = {};
     if (dto.amount !== undefined) values.amount = dto.amount.toString();
     if (dto.date !== undefined) values.date = new Date(dto.date);
     if (dto.category !== undefined) values.category = dto.category;
 
-    const [entry] = await this.db.update(dataEntries).set(values).where(eq(dataEntries.id, id)).returning();
+    const [entry] = await this.db
+      .update(dataEntries)
+      .set(values)
+      .where(and(eq(dataEntries.id, id), eq(dataEntries.userId, userId)))
+      .returning();
 
     if (!entry) throw new NotFoundException(`Entry ${id} not found`);
     return this.toResponse(entry);
   }
 
   async remove(id: number): Promise<{ success: boolean }> {
-    const [deleted] = await this.db.delete(dataEntries).where(eq(dataEntries.id, id)).returning();
+    const userId = this.getUserId();
+    const [deleted] = await this.db
+      .delete(dataEntries)
+      .where(and(eq(dataEntries.id, id), eq(dataEntries.userId, userId)))
+      .returning();
 
     if (!deleted) throw new NotFoundException(`Entry ${id} not found`);
     return { success: true };
