@@ -1,0 +1,119 @@
+<div class="register-modal-container">
+  <div class="register-header">
+    <div class="logo-container">
+      <mat-icon class="logo-icon">account_balance_wallet</mat-icon>
+    </div>
+    <h1>Create Account</h1>
+    <p class="subtitle">Join Finance Tracker today</p>
+  </div>
+
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="name-fields">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>First Name</mat-label>
+        <input
+          matInput
+          formControlName="firstName"
+          type="text"
+          autocomplete="given-name"
+          placeholder="John"
+        />
+        <mat-icon matPrefix class="input-icon">person</mat-icon>
+        @if (registerForm.get('firstName')?.hasError('required')) {
+          <mat-error>First name is required</mat-error>
+        }
+        @if (registerForm.get('firstName')?.hasError('minlength')) {
+          <mat-error>At least 2 characters</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Last Name</mat-label>
+        <input
+          matInput
+          formControlName="lastName"
+          type="text"
+          autocomplete="family-name"
+          placeholder="Doe"
+        />
+        <mat-icon matPrefix class="input-icon">person</mat-icon>
+        @if (registerForm.get('lastName')?.hasError('required')) {
+          <mat-error>Last name is required</mat-error>
+        }
+        @if (registerForm.get('lastName')?.hasError('minlength')) {
+          <mat-error>At least 2 characters</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email</mat-label>
+      <input
+        matInput
+        formControlName="email"
+        type="email"
+        autocomplete="email"
+        placeholder="john.doe@example.com"
+      />
+      <mat-icon matPrefix class="input-icon">email</mat-icon>
+      @if (registerForm.get('email')?.hasError('required')) {
+        <mat-error>Email is required</mat-error>
+      }
+      @if (registerForm.get('email')?.hasError('email')) {
+        <mat-error>Please enter a valid email</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        formControlName="password"
+        type="password"
+        autocomplete="new-password"
+        placeholder="At least 8 characters"
+      />
+      <mat-icon matPrefix class="input-icon">lock</mat-icon>
+      @if (registerForm.get('password')?.hasError('required')) {
+        <mat-error>Password is required</mat-error>
+      }
+      @if (registerForm.get('password')?.hasError('minlength')) {
+        <mat-error>Password must be at least 8 characters</mat-error>
+      }
+    </mat-form-field>
+
+    @if (loading()) {
+      <mat-progress-bar mode="indeterminate" class="loading-bar"></mat-progress-bar>
+    }
+
+    @if (error()) {
+      <div class="error-message">
+        <mat-icon>error</mat-icon>
+        <span>{{ error() }}</span>
+      </div>
+    }
+
+    <div class="dialog-actions">
+      <button mat-button type="button" (click)="closeDialog()" [disabled]="loading()">
+        Cancel
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="registerForm.invalid || loading()"
+      >
+        @if (loading()) {
+          <span>Creating account...</span>
+        } @else {
+          <span>Sign Up</span>
+        }
+      </button>
+    </div>
+  </form>
+
+  <p class="login-link">
+    Already have an account?
+    <button type="button" class="link-button" (click)="onSwitchToLogin()">Sign in</button>
+  </p>
+</div>

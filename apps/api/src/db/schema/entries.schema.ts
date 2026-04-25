@@ -1,6 +1,7 @@
-import { pgEnum, pgTable, numeric, serial, timestamp } from 'drizzle-orm/pg-core';
+import { pgEnum, pgTable, numeric, serial, timestamp, integer } from 'drizzle-orm/pg-core';
+import { users } from './users.schema';
 
-// Mirrors the Category enum from the Angular frontend
+// Categories for expense/income tracking
 export const categoryEnum = pgEnum('category', [
   'food_and_beverage',
   'groceries',
@@ -13,6 +14,7 @@ export const categoryEnum = pgEnum('category', [
 
 export const dataEntries = pgTable('data_entries', {
   id: serial('id').primaryKey(),
+  userId: integer('user_id').references(() => users.id).notNull(),
   amount: numeric('amount', { precision: 10, scale: 2 }).notNull(),
   date: timestamp('date', { mode: 'date' }).notNull(),
   category: categoryEnum('category').notNull()

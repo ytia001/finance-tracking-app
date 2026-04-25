@@ -24,6 +24,10 @@ __screenshots__/
 # NestJS / API
 apps/api/.env
 
+# Drizzle ORM migrations
+apps/api/drizzle/*.sql
+apps/api/drizzle/meta/
+
 # IDEs and editors
 .idea/
 .project

@@ -3,9 +3,23 @@ import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { Reflector } from '@nestjs/core';
+import { ClsService } from 'nestjs-cls';
+import { TenantInterceptor } from './common/cls.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const clsService = app.get(ClsService);
+  app.useGlobalInterceptors(new TenantInterceptor(clsService));
+
+  // Set global API prefix — all routes will be under /api
+  app.setGlobalPrefix('api');
+
+  // Apply JWT guard globally — all endpoints require authentication by default
+  // Use @Public() decorator to skip auth for specific routes (login, register, etc.)
+  app.useGlobalGuards(new JwtAuthGuard(new Reflector()));
 
   // Enable CORS so the Angular dev server (localhost:4200) can call this API
   app.enableCors({

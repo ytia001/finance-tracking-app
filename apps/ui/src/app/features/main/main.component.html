@@ -11,8 +11,12 @@
   <mat-sidenav-content class="main">
     <!-- Header -->
     <app-header
+      [isAuthenticated]="isAuthenticated()"
+      [userName]="user()?.firstName ?? null"
       (sideNavClicked)="sidenav.toggle()"
       (addFinanceClicked)="handleAddFinanceClicked()"
+      (signInClicked)="handleSignInClicked()"
+      (logoutClicked)="handleLogoutClicked()"
     ></app-header>
 
     <!-- Routed Page -->

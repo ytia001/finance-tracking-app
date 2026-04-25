@@ -2,8 +2,20 @@ import { Category } from './core/constants/Category';
 import { DataEntry } from './models/DataEntry';
 import { DataEntryRequest } from './features/main/entry-modal/entry-modal-control-service/entry-modal-control.service';
 import { DayGroup, MonthTab, TransactionEntry } from './models/transaction';
+import { UserProfile } from './models/auth';
 
 export class TestHelpers {
+  static makeUserProfile(props: Partial<UserProfile> = {}): UserProfile {
+    return {
+      id: 1,
+      email: 'test@test.com',
+      firstName: 'Test',
+      lastName: 'User',
+      roles: ['user'],
+      ...props,
+    };
+  }
+
   static createDateEntryRequest(props?: Partial<DataEntryRequest>): DataEntryRequest {
     return {
       category: Category.INCOME,
