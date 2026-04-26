@@ -1,0 +1,20 @@
+:host {
+  width: 100%;
+}
+
+.sidebar-item {
+  width: 100%;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--mat-sys-on-surface);
+
+  &.active {
+    background: var(--mat-sys-secondary-container) !important;
+    color: var(--mat-sys-on-secondary-container);
+  }
+}
+
+:host ::ng-deep .mat-mdc-button {
+  width: 100%;
+  box-shadow: none !important;
+}
