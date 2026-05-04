@@ -3,7 +3,7 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from './schema';
 
-// Injection token used across the app
+export const POSTGRES = Symbol('POSTGRES');
 export const DRIZZLE = Symbol('DRIZZLE');
 
 export type DrizzleDB = ReturnType<typeof drizzle<typeof schema>>;
@@ -12,13 +12,16 @@ export type DrizzleDB = ReturnType<typeof drizzle<typeof schema>>;
 @Module({
   providers: [
     {
+      provide: POSTGRES,
+      useFactory: () => postgres(process.env.DATABASE_URL!),
+    },
+    {
       provide: DRIZZLE,
-      useFactory: () => {
-        const client = postgres(process.env.DATABASE_URL!);
-        return drizzle(client, { schema });
-      }
-    }
+      inject: [POSTGRES],
+      useFactory: (client: ReturnType<typeof postgres>) =>
+        drizzle(client, { schema }),
+    },
   ],
-  exports: [DRIZZLE]
+  exports: [POSTGRES, DRIZZLE],
 })
 export class DrizzleModule {}
