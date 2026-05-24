@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { TabscannerService, TabscannerStatus } from '../tabscanner/tabscanner.service';
-import { ReceiptsService } from '../receipts/receipts.service';
+import { ReceiptsService } from './receipts.service';
 
 interface ReceiptJobData {
   jobId: string;

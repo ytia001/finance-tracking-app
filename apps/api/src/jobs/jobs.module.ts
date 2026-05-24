@@ -1,18 +1,12 @@
 import { Module } from '@nestjs/common';
-import { BullModule } from '@nestjs/bullmq';
-import { ReceiptProcessor } from './receipt.processor';
-import { TabscannerModule } from '../tabscanner/tabscanner.module';
 import { ReceiptsModule } from '../receipts/receipts.module';
+import { BullQueueModule } from '../bull/bull.module';
 
 @Module({
   imports: [
-    BullModule.registerQueue({
-      name: 'receipt-queue',
-    }),
-    TabscannerModule,
     ReceiptsModule,
+    BullQueueModule,
   ],
-  providers: [ReceiptProcessor],
-  exports: [BullModule],
+  exports: [BullQueueModule],
 })
 export class JobsModule {}
