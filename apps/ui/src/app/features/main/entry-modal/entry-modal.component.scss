@@ -1,0 +1,67 @@
+.method-selection {
+  display: flex;
+  gap: 16px;
+  padding: 24px 16px;
+  justify-content: center;
+}
+
+.method-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px 24px;
+  border: 2px dashed #c0c0c0;
+  border-radius: 12px;
+  background: #fafafa;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 180px;
+  font: inherit;
+  color: inherit;
+
+  &:hover {
+    border-color: #3f51b5;
+    background: #f0f2ff;
+  }
+
+  .mat-icon {
+    font-size: 40px;
+    height: 40px;
+    width: 40px;
+    color: #3f51b5;
+  }
+
+  .card-title {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: #666;
+    text-align: center;
+  }
+}
+
+.upload-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+  height: 80%;
+
+  .progress-text {
+    font-size: 15px;
+    color: #555;
+  }
+
+  .success-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    color: #4caf50;
+  }
+}

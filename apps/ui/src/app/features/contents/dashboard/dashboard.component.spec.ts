@@ -46,8 +46,8 @@ describe('DashboardComponent', () => {
 
   it('should emit correct entries from the store', async () => {
     const entries = [
-      TestHelpers.makeEntry({ id: 1, category: Category.INCOME, amount: '500' }),
-      TestHelpers.makeEntry({ id: 2, category: Category.FOOD_AND_BEVERAGE, amount: '80' }),
+      TestHelpers.createDataEntry({ id: 1, category: Category.INCOME, amount: '500' }),
+      TestHelpers.createDataEntry({ id: 2, category: Category.FOOD_AND_BEVERAGE, amount: '80' }),
     ] as DataEntry[];
     await setupWithState(entries);
     component.entries$.subscribe((result) => {
@@ -61,7 +61,7 @@ describe('DashboardComponent', () => {
     await setupWithState([]);
 
     const newEntries = [
-      TestHelpers.makeEntry({ id: 10, category: Category.TRANSPORT, amount: '30' }),
+      TestHelpers.createDataEntry({ id: 10, category: Category.TRANSPORT, amount: '30' }),
     ];
     store.overrideSelector(selectDashboardEntries, newEntries);
     store.refreshState();

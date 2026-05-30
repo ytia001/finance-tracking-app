@@ -37,7 +37,7 @@ export class ReceiptProcessor extends WorkerHost {
       throw new Error(response.error || 'OCR processing failed');
     }
 
-    if (response.status === TabscannerStatus.COMPLETED) {
+    if (response.status === TabscannerStatus.DONE) {
       await this.receiptsService.markJobCompleted(jobId, response.data);
       return response.data;
     }

@@ -17,6 +17,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MainEffects } from './core/store/effects/main.effects';
 import { ToastEffects } from './core/store/effects/toast.effects';
 import { AuthEffects } from './core/store/effects/auth.effects';
+import { ReceiptsEffects } from './core/store/effects/receipts.effects';
 import { provideToastr } from 'ngx-toastr';
 import { toastrConfig } from './core/constants/Toast';
 import { appReducers } from './core/store/app/app.reducer';
@@ -32,7 +33,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withInterceptors([apiPrefixInterceptor, authInterceptor])),
     provideStore(appReducers),
-    provideEffects([MainEffects, ToastEffects, AuthEffects]),
+    provideEffects([MainEffects, ToastEffects, AuthEffects, ReceiptsEffects]),
+
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideCharts(withDefaultRegisterables()),
     importProvidersFrom(MatNativeDateModule),

@@ -5,8 +5,8 @@ import FormData from 'form-data';
 
 export enum TabscannerStatus {
   PENDING = 'pending',
-  COMPLETED = 'completed',
-  FAILED = 'failed',
+  DONE = 'done',
+  FAILED = 'failed'
 }
 
 export interface TabscannerSubmitResponse {
@@ -32,21 +32,17 @@ export class TabscannerService {
 
   async submitImage(imageBuffer: Buffer): Promise<string> {
     this.logger.log('Submitting image to Tabscanner');
-    
+
     const formData = new FormData();
     formData.append('file', imageBuffer, { filename: 'receipt.jpg' });
 
     try {
-      const response = await axios.post<TabscannerSubmitResponse>(
-        `${this.baseUrl}/submit`,
-        formData,
-        {
-          headers: {
-            ...formData.getHeaders(),
-            'Authorization': `Bearer ${this.apiKey}`,
-          },
-        },
-      );
+      const response = await axios.post<TabscannerSubmitResponse>(`${this.baseUrl}/api/2/process`, formData, {
+        headers: {
+          ...formData.getHeaders(),
+          apikey: this.apiKey
+        }
+      });
 
       return response.data.token;
     } catch (error: any) {
@@ -56,21 +52,20 @@ export class TabscannerService {
   }
 
   async getStatus(token: string): Promise<TabscannerStatusResponse> {
-    this.logger.log(`Fetching status from Tabscanner for token: ${token}`);
-    
-    try {
-      const response = await axios.get<TabscannerStatusResponse>(
-        `${this.baseUrl}/status/${token}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${this.apiKey}`,
-          },
-        },
-      );
+    this.logger.log(`Fetching result from Tabscanner for token: ${token}`);
 
-      return response.data;
+    try {
+      const response = await axios.get(`${this.baseUrl}/api/result/${token}`, {
+        headers: {
+          apikey: this.apiKey
+        }
+      });
+
+      const data = response.data;
+
+      return { status: data.status, data: data.result };
     } catch (error: any) {
-      this.logger.error('Failed to fetch status from Tabscanner', error.response?.data || error.message);
+      this.logger.error('Failed to fetch result from Tabscanner', error.response?.data || error.message);
       throw error;
     }
   }

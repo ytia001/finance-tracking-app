@@ -5,7 +5,7 @@ import { DayGroup, MonthTab, TransactionEntry } from './models/transaction';
 import { UserProfile } from './models/auth';
 
 export class TestHelpers {
-  static makeUserProfile(props: Partial<UserProfile> = {}): UserProfile {
+  static createUserProfile(props: Partial<UserProfile> = {}): UserProfile {
     return {
       id: 1,
       email: 'test@test.com',
@@ -25,7 +25,7 @@ export class TestHelpers {
     };
   }
 
-  static makeEntry(props: Partial<DataEntry> = {}): DataEntry {
+  static createDataEntry(props: Partial<DataEntry> = {}): DataEntry {
     return {
       id: 1,
       category: Category.OTHERS,

@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { MainActions } from '../actions/main.actions';
-import { catchError, filter, map, of, switchMap } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
+import { catchError, delay, filter, map, of, switchMap, tap } from 'rxjs';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MainResourceActions } from '../actions/resources/main.actions';
 import { MainService } from '../../services/main.services';
 import { ModalConstants } from '../../constants/Modal';
@@ -16,6 +16,7 @@ export class MainEffects {
   private actions$ = inject(Actions);
   private dialog = inject(MatDialog);
   private service = inject(MainService);
+  private entryModalDialogRef: MatDialogRef<EntryModalComponent> | null = null;
 
   openAddDataEntryModal$ = createEffect(() => {
     return this.actions$.pipe(
@@ -26,6 +27,7 @@ export class MainEffects {
           width: ModalConstants.MODAL_WIDTH_PERCENTAGE,
           height: ModalConstants.MODAL_HEIGHT_PERCENTAGE,
         });
+        this.entryModalDialogRef = dialogRef;
 
         return dialogRef.afterClosed().pipe(
           filter((result: DataEntryRequest | null): result is DataEntryRequest => !!result),
@@ -75,4 +77,14 @@ export class MainEffects {
       ),
     );
   });
+
+  closeAddDataEntryModalOnSaveSuccess$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(MainResourceActions.saveDataEntrySuccess),
+        tap(() => this.entryModalDialogRef?.close()),
+      );
+    },
+    { dispatch: false },
+  );
 }

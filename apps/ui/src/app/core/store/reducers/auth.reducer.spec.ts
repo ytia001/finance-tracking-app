@@ -5,7 +5,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { TestHelpers } from '../../../test-helpers';
 
 describe('AuthReducer', () => {
-  const testUser = TestHelpers.makeUserProfile();
+  const testUser = TestHelpers.createUserProfile();
 
   describe('unknown action', () => {
     it('should return the initial state', () => {

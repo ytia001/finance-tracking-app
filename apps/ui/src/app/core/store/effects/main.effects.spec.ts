@@ -21,7 +21,7 @@ describe('MainEffects', () => {
     dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
     dialogRefSpy = jasmine.createSpyObj<MatDialogRef<EntryModalComponent, string | null>>(
       'MatDialogRef',
-      ['afterClosed'],
+      ['afterClosed', 'close'],
     );
 
     TestBed.configureTestingModule({
@@ -83,6 +83,36 @@ describe('MainEffects', () => {
     effects.openAddDataEntryModal$.subscribe((action) => {
       expect(action).toEqual(MainActions.error({ error: httpError }));
       done();
+    });
+  });
+
+  describe('closeAddDataEntryModalOnSaveSuccess', () => {
+    it('should close the dialog when saveDataEntrySuccess is dispatched', (done) => {
+      const entry = TestHelpers.createDataEntry();
+      effects['entryModalDialogRef'] = dialogRefSpy;
+
+      actions$ = of(
+        MainResourceActions.saveDataEntrySuccess({ data: entry, successMessage: 'Saved!' }),
+      );
+
+      effects.closeAddDataEntryModalOnSaveSuccess$.subscribe(() => {
+        expect(dialogRefSpy.close).toHaveBeenCalled();
+        done();
+      });
+    });
+
+    it('should not throw when dialog ref is null', (done) => {
+      const entry = TestHelpers.createDataEntry();
+      effects['entryModalDialogRef'] = null;
+
+      actions$ = of(
+        MainResourceActions.saveDataEntrySuccess({ data: entry, successMessage: 'Saved!' }),
+      );
+
+      effects.closeAddDataEntryModalOnSaveSuccess$.subscribe(() => {
+        expect(dialogRefSpy.close).not.toHaveBeenCalled();
+        done();
+      });
     });
   });
 });
