@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { MainActions } from '../actions/main.actions';
-import { catchError, delay, filter, map, of, switchMap, tap } from 'rxjs';
+import { catchError, filter, map, of, switchMap, tap } from 'rxjs';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MainResourceActions } from '../actions/resources/main.actions';
 import { MainService } from '../../services/main.services';

@@ -55,7 +55,9 @@ describe('ReceiptsEffects', () => {
     it('should dispatch uploadReceiptForProcessingFailure on error', (done) => {
       const mockFile = new File(['content'], 'test.jpg', { type: 'image/jpeg' });
       const errorResponse = new HttpErrorResponse({ status: 500, statusText: 'Internal Error' });
-      receiptsServiceSpy.uploadReceiptForProcessing.and.returnValue(throwError(() => errorResponse));
+      receiptsServiceSpy.uploadReceiptForProcessing.and.returnValue(
+        throwError(() => errorResponse),
+      );
 
       actions$ = of(MainActions.uploadReceipt({ file: mockFile }));
 

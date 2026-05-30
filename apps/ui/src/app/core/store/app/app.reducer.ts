@@ -16,4 +16,3 @@ export const appReducers: ActionReducerMap<AppState> = {
   [AUTH_FEATURE_KEY]: authReducer,
   [RECEIPTS_FEATURE_KEY]: receiptsReducer,
 };
-

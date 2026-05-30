@@ -1,8 +1,4 @@
-import {
-  selectIsFileUploading,
-  selectJobId,
-  selectReceiptError,
-} from './receipts.selectors';
+import { selectIsFileUploading, selectJobId, selectReceiptError } from './receipts.selectors';
 import { ReceiptsState } from '../reducers/receipts.reducer';
 
 describe('receipts selectors', () => {

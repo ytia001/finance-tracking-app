@@ -19,7 +19,10 @@ import { CategoryConfigurations } from '../../../core/constants/Category';
 import { AsyncPipe } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { MainActions } from '../../../core/store/actions/main.actions';
-import { selectIsFileUploading, selectReceiptError } from '../../../core/store/selectors/receipts.selectors';
+import {
+  selectIsFileUploading,
+  selectReceiptError,
+} from '../../../core/store/selectors/receipts.selectors';
 
 export enum ViewMode {
   MainMenu = 'MainMenu',

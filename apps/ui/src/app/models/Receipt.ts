@@ -9,7 +9,7 @@ export interface TabscannerParsedData {
   total?: number | string;
   date?: string;
   establishment?: string;
-  [key: string]: any;
+  [key: string]: string | number | undefined;
 }
 
 export interface ReceiptJobToken {
