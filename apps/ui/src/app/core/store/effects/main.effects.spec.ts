@@ -2,33 +2,27 @@ import { TestBed } from '@angular/core/testing';
 import { MainEffects } from './main.effects';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Observable, of, throwError } from 'rxjs';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MainActions } from '../actions/main.actions';
 import { MainResourceActions } from '../actions/resources/main.actions';
 import { Action } from '@ngrx/store';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ModalDialogService } from '../../services/modal-dialog.service';
 import { EntryModalComponent } from '../../../features/main/entry-modal/entry-modal.component';
-import { ModalConstants } from '../../constants/Modal';
 import { TestHelpers } from '../../../test-helpers';
 
 describe('MainEffects', () => {
   let actions$: Observable<Action>;
   let effects: MainEffects;
-  let dialogSpy: jasmine.SpyObj<MatDialog>;
-  let dialogRefSpy: jasmine.SpyObj<MatDialogRef<EntryModalComponent>>;
+  let modalDialogServiceSpy: jasmine.SpyObj<ModalDialogService>;
 
   beforeEach(() => {
-    dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
-    dialogRefSpy = jasmine.createSpyObj<MatDialogRef<EntryModalComponent, string | null>>(
-      'MatDialogRef',
-      ['afterClosed', 'close'],
-    );
+    modalDialogServiceSpy = jasmine.createSpyObj('ModalDialogService', ['open', 'close']);
 
     TestBed.configureTestingModule({
       providers: [
         MainEffects,
         provideMockActions(() => actions$),
-        { provide: MatDialog, useValue: dialogSpy },
+        { provide: ModalDialogService, useValue: modalDialogServiceSpy },
       ],
     });
 
@@ -38,20 +32,14 @@ describe('MainEffects', () => {
   it('should open dialog and dispatch saveDataEntrySuccess when dialog returns data', (done) => {
     const dialogResult = TestHelpers.createDateEntryRequest();
 
-    dialogRefSpy.afterClosed.and.returnValue(of(dialogResult));
-    dialogSpy.open.and.returnValue(dialogRefSpy);
+    modalDialogServiceSpy.open.and.returnValue(of(dialogResult));
 
     actions$ = of(MainActions.openAddDataEntryModal());
 
     effects.openAddDataEntryModal$.subscribe((action) => {
-      expect(dialogSpy.open).toHaveBeenCalledWith(
-        EntryModalComponent,
-        jasmine.objectContaining({
-          disableClose: true,
-          width: ModalConstants.MODAL_WIDTH_PERCENTAGE,
-          height: ModalConstants.MODAL_HEIGHT_PERCENTAGE,
-        }),
-      );
+      expect(modalDialogServiceSpy.open).toHaveBeenCalledWith(EntryModalComponent, {
+        disableClose: true,
+      });
 
       expect(action).toEqual(MainResourceActions.saveDataEntry({ data: dialogResult }));
       done();
@@ -59,8 +47,7 @@ describe('MainEffects', () => {
   });
 
   it('should do nothing when dialog is cancelled (returns null)', (done) => {
-    dialogRefSpy.afterClosed.and.returnValue(of(null));
-    dialogSpy.open.and.returnValue(dialogRefSpy);
+    modalDialogServiceSpy.open.and.returnValue(of(null));
 
     actions$ = of(MainActions.openAddDataEntryModal());
 
@@ -75,44 +62,13 @@ describe('MainEffects', () => {
       error: 'Dialog failed',
     });
 
-    dialogRefSpy.afterClosed.and.returnValue(throwError(() => httpError));
-    dialogSpy.open.and.returnValue(dialogRefSpy);
+    modalDialogServiceSpy.open.and.returnValue(throwError(() => httpError));
 
     actions$ = of(MainActions.openAddDataEntryModal());
 
     effects.openAddDataEntryModal$.subscribe((action) => {
       expect(action).toEqual(MainActions.error({ error: httpError }));
       done();
-    });
-  });
-
-  describe('closeAddDataEntryModalOnSaveSuccess', () => {
-    it('should close the dialog when saveDataEntrySuccess is dispatched', (done) => {
-      const entry = TestHelpers.createDataEntry();
-      effects['entryModalDialogRef'] = dialogRefSpy;
-
-      actions$ = of(
-        MainResourceActions.saveDataEntrySuccess({ data: entry, successMessage: 'Saved!' }),
-      );
-
-      effects.closeAddDataEntryModalOnSaveSuccess$.subscribe(() => {
-        expect(dialogRefSpy.close).toHaveBeenCalled();
-        done();
-      });
-    });
-
-    it('should not throw when dialog ref is null', (done) => {
-      const entry = TestHelpers.createDataEntry();
-      effects['entryModalDialogRef'] = null;
-
-      actions$ = of(
-        MainResourceActions.saveDataEntrySuccess({ data: entry, successMessage: 'Saved!' }),
-      );
-
-      effects.closeAddDataEntryModalOnSaveSuccess$.subscribe(() => {
-        expect(dialogRefSpy.close).not.toHaveBeenCalled();
-        done();
-      });
     });
   });
 });

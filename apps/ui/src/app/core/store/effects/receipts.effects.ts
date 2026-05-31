@@ -5,6 +5,7 @@ import { MainResourceActions } from '../actions/resources/main.actions';
 import { ReceiptsActions } from '../actions/resources/receipts.actions';
 import { ReceiptsService } from '../../services/receipts.service';
 import { MainService } from '../../services/main.services';
+import { ModalDialogService } from '../../services/modal-dialog.service';
 import { catchError, first, map, of, repeat, switchMap } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { JobStatus, TabscannerParsedData } from '../../../models/Receipt';
@@ -16,6 +17,7 @@ export class ReceiptsEffects {
   private actions$ = inject(Actions);
   private receiptsService = inject(ReceiptsService);
   private mainService = inject(MainService);
+  private modalDialogService = inject(ModalDialogService);
 
   uploadReceiptForProcessing$ = createEffect(() =>
     this.actions$.pipe(
@@ -76,12 +78,13 @@ export class ReceiptsEffects {
       switchMap(({ parsedData }) => {
         const entryRequest = this.buildEntryRequest(parsedData);
         return this.mainService.create(entryRequest).pipe(
-          map((data) =>
-            MainResourceActions.saveDataEntrySuccess({
+          map((data) => {
+            this.modalDialogService.close();
+            return MainResourceActions.saveDataEntrySuccess({
               data,
               successMessage: 'Receipt uploaded and new entry created',
-            }),
-          ),
+            });
+          }),
           catchError((error: HttpErrorResponse) =>
             of(
               MainResourceActions.saveDataEntryFailure({

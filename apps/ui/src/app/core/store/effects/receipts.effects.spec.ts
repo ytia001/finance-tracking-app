@@ -9,6 +9,7 @@ import { MainResourceActions } from '../actions/resources/main.actions';
 import { ReceiptsActions } from '../actions/resources/receipts.actions';
 import { ReceiptsService } from '../../services/receipts.service';
 import { MainService } from '../../services/main.services';
+import { ModalDialogService } from '../../services/modal-dialog.service';
 import { JobStatus } from '../../../models/Receipt';
 import { Category } from '../../constants/Category';
 
@@ -17,6 +18,7 @@ describe('ReceiptsEffects', () => {
   let effects: ReceiptsEffects;
   let receiptsServiceSpy: jasmine.SpyObj<ReceiptsService>;
   let mainServiceSpy: jasmine.SpyObj<MainService>;
+  let modalDialogServiceSpy: jasmine.SpyObj<ModalDialogService>;
 
   beforeEach(() => {
     receiptsServiceSpy = jasmine.createSpyObj('ReceiptsService', [
@@ -24,6 +26,7 @@ describe('ReceiptsEffects', () => {
       'getStatus',
     ]);
     mainServiceSpy = jasmine.createSpyObj('MainService', ['create']);
+    modalDialogServiceSpy = jasmine.createSpyObj('ModalDialogService', ['open', 'close']);
 
     TestBed.configureTestingModule({
       providers: [
@@ -31,6 +34,7 @@ describe('ReceiptsEffects', () => {
         provideMockActions(() => actions$),
         { provide: ReceiptsService, useValue: receiptsServiceSpy },
         { provide: MainService, useValue: mainServiceSpy },
+        { provide: ModalDialogService, useValue: modalDialogServiceSpy },
       ],
     });
 
@@ -138,6 +142,7 @@ describe('ReceiptsEffects', () => {
       actions$ = of(ReceiptsActions.pollReceiptCompletedStatus({ parsedData: mockParsedData }));
 
       effects.createEntryFromReceipt$.subscribe((action) => {
+        expect(modalDialogServiceSpy.close).toHaveBeenCalled();
         expect(mainServiceSpy.create).toHaveBeenCalledWith({
           amount: 100,
           date: new Date('2026-05-24'),
