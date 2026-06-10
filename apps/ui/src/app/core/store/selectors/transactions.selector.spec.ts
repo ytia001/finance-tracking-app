@@ -14,7 +14,7 @@ describe('buildMonthTabs', () => {
   });
 
   it('should produce one MonthTab for a single entry', () => {
-    const entry = TestHelpers.makeEntry({
+    const entry = TestHelpers.createDataEntry({
       id: 1,
       category: Category.GROCERIES,
       amount: '50',
@@ -33,7 +33,7 @@ describe('buildMonthTabs', () => {
   });
 
   it('should classify INCOME category entries as income, not spend', () => {
-    const entry = TestHelpers.makeEntry({
+    const entry = TestHelpers.createDataEntry({
       id: 1,
       category: Category.INCOME,
       amount: '1000',
@@ -49,13 +49,13 @@ describe('buildMonthTabs', () => {
 
   it('should group entries in the same month into one tab', () => {
     const entries = [
-      TestHelpers.makeEntry({
+      TestHelpers.createDataEntry({
         id: 1,
         category: Category.GROCERIES,
         amount: '30',
         date: new Date('2026-03-05').getTime(),
       }),
-      TestHelpers.makeEntry({
+      TestHelpers.createDataEntry({
         id: 2,
         category: Category.FOOD_AND_BEVERAGE,
         amount: '20',
@@ -71,13 +71,13 @@ describe('buildMonthTabs', () => {
 
   it('should group entries on the same day into one DayGroup', () => {
     const entries = [
-      TestHelpers.makeEntry({
+      TestHelpers.createDataEntry({
         id: 1,
         category: Category.GROCERIES,
         amount: '30',
         date: new Date('2026-03-10T08:00:00Z').getTime(),
       }),
-      TestHelpers.makeEntry({
+      TestHelpers.createDataEntry({
         id: 2,
         category: Category.FOOD_AND_BEVERAGE,
         amount: '20',
@@ -91,13 +91,13 @@ describe('buildMonthTabs', () => {
 
   it('should produce separate tabs for entries in different months, sorted latest first', () => {
     const entries = [
-      TestHelpers.makeEntry({
+      TestHelpers.createDataEntry({
         id: 1,
         category: Category.GROCERIES,
         amount: '10',
         date: new Date('2026-01-01').getTime(),
       }),
-      TestHelpers.makeEntry({
+      TestHelpers.createDataEntry({
         id: 2,
         category: Category.INCOME,
         amount: '500',
@@ -112,7 +112,7 @@ describe('buildMonthTabs', () => {
   });
 
   it('should attach correct categoryIcon to each TransactionEntry', () => {
-    const entry = TestHelpers.makeEntry({
+    const entry = TestHelpers.createDataEntry({
       id: 1,
       category: Category.TRANSPORT,
       amount: '15',

@@ -1,56 +1,87 @@
-<h2 mat-dialog-title>Add Transaction</h2>
-
-<form [formGroup]="entryFormGroup">
-  <mat-dialog-content class="container-fluid">
-    <div class="row">
-      <div class="col-12 mb-3">
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Category</mat-label>
-          <mat-select formControlName="category">
-            @for (category of categoryOptions; track $index) {
-              <mat-option [value]="category.value">{{ category.label }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-12 mb-3">
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Amount</mat-label>
-          <input matInput type="number" formControlName="amount" />
-        </mat-form-field>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-12 mb-3">
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Date</mat-label>
-          <input
-            matInput
-            [matDatepicker]="picker"
-            placeholder="Choose a Date"
-            formControlName="date"
-          />
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-      </div>
-    </div>
-  </mat-dialog-content>
-  <mat-dialog-actions>
-    <button mat-button type="button" (click)="closeDialog()">Close</button>
-
-    <button
-      mat-raised-button
-      color="primary"
-      type="button"
-      [disabled]="entryFormGroup.invalid"
-      (click)="saveDialog()"
-    >
-      Add
+@if (viewMode === ViewMode.MainMenu) {
+  <mat-dialog-content class="method-selection">
+    <button class="method-card" (click)="fileInput.click()" type="button">
+      <mat-icon>cloud_upload</mat-icon>
+      <span class="card-title">Upload Image</span>
+      <span class="card-desc">Scan a receipt or invoice</span>
     </button>
-  </mat-dialog-actions>
-</form>
+    <input #fileInput type="file" hidden accept="image/*" (change)="onFileSelected($event)" />
+
+    <button class="method-card" (click)="selectManual()" type="button">
+      <mat-icon>edit_note</mat-icon>
+      <span class="card-title">Manually Enter Data</span>
+      <span class="card-desc">Type the details yourself</span>
+    </button>
+  </mat-dialog-content>
+}
+
+@if (viewMode === ViewMode.ManualForm) {
+  <h2 mat-dialog-title>Add Transaction</h2>
+
+  <form [formGroup]="entryFormGroup">
+    <mat-dialog-content class="container-fluid">
+      <div class="row">
+        <div class="col-12 mb-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Category</mat-label>
+            <mat-select formControlName="category">
+              @for (category of categoryOptions; track $index) {
+                <mat-option [value]="category.value">{{ category.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 mb-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Amount</mat-label>
+            <input matInput type="number" formControlName="amount" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 mb-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="picker"
+              placeholder="Choose a Date"
+              formControlName="date"
+            />
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button class="btn-tertiary" type="button" (click)="closeDialog()">Close</button>
+
+      <button
+        class="btn-primary"
+        type="button"
+        [disabled]="entryFormGroup.invalid"
+        (click)="saveDialog()"
+      >
+        Add
+      </button>
+    </mat-dialog-actions>
+  </form>
+}
+
+@if (viewMode === ViewMode.UploadingFile) {
+  <h2 mat-dialog-title>Uploading Receipt</h2>
+  <mat-dialog-content class="upload-progress">
+    @if (isUploading$ | async) {
+      <mat-spinner diameter="48"></mat-spinner>
+      <span class="progress-text">Processing receipt...</span>
+    } @else if (error$ | async; as error) {
+      <span class="progress-text">{{ error }}</span>
+      <button class="btn-tertiary" (click)="goBackToMainMenu()">Back to Main Menu</button>
+    }
+  </mat-dialog-content>
+}

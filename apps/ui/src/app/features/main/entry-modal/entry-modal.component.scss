@@ -1,0 +1,73 @@
+@use '../../../core/styles/design-system.scss' as ds;
+
+.method-selection {
+  display: flex;
+  gap: 16px;
+  padding: 24px 16px;
+  justify-content: center;
+}
+
+.method-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px 24px;
+  border: 2px dashed ds.$outline;
+  border-radius: 12px;
+  background: ds.$surface;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 180px;
+  font: inherit;
+  color: inherit;
+
+  &:hover {
+    border-color: ds.$primary;
+    background: ds.$surface-container-low;
+  }
+
+  .mat-icon {
+    font-size: 40px;
+    height: 40px;
+    width: 40px;
+    color: ds.$primary;
+  }
+
+  .card-title {
+    font-size: ds.$font-size-title;
+    font-weight: ds.$font-weight-semibold;
+    line-height: ds.$line-height-title;
+  }
+
+  .card-desc {
+    font-size: ds.$font-size-small;
+    line-height: ds.$line-height-small;
+    color: ds.$on-surface-variant;
+    text-align: center;
+  }
+}
+
+.upload-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+  flex: 1;
+  min-height: 200px;
+
+  .progress-text {
+    font-size: ds.$font-size-body;
+    line-height: ds.$line-height-body;
+    color: ds.$on-surface-variant;
+  }
+
+  .success-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    color: ds.$success;
+  }
+}

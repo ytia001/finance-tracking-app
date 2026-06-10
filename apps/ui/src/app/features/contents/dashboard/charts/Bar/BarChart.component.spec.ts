@@ -26,12 +26,12 @@ describe('BarChartComponent', () => {
   describe('parseData', () => {
     it('should produce two datasets: Income and Expenses', () => {
       const entries = [
-        TestHelpers.makeEntry({
+        TestHelpers.createDataEntry({
           category: Category.INCOME,
           amount: '500',
           date: new Date('2026-01-01').getTime(),
         }),
-        TestHelpers.makeEntry({
+        TestHelpers.createDataEntry({
           category: Category.TRANSPORT,
           amount: '50',
           date: new Date('2026-01-15').getTime(),
@@ -45,12 +45,12 @@ describe('BarChartComponent', () => {
 
     it('should sort month labels chronologically', () => {
       const entries = [
-        TestHelpers.makeEntry({
+        TestHelpers.createDataEntry({
           category: Category.INCOME,
           amount: '100',
           date: new Date('2026-03-01').getTime(),
         }),
-        TestHelpers.makeEntry({
+        TestHelpers.createDataEntry({
           category: Category.INCOME,
           amount: '100',
           date: new Date('2026-01-01').getTime(),
@@ -62,12 +62,12 @@ describe('BarChartComponent', () => {
 
     it('should sum expenses correctly per month', () => {
       const entries = [
-        TestHelpers.makeEntry({
+        TestHelpers.createDataEntry({
           category: Category.FOOD_AND_BEVERAGE,
           amount: '30',
           date: new Date('2026-02-01').getTime(),
         }),
-        TestHelpers.makeEntry({
+        TestHelpers.createDataEntry({
           category: Category.TRANSPORT,
           amount: '20',
           date: new Date('2026-02-15').getTime(),

@@ -38,6 +38,32 @@ body {
   height: 100%;
 }
 
+.btn-primary {
+  @include design-system.button-primary;
+  height: 44px;
+  min-width: 120px;
+  padding: 0 24px;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.btn-tertiary {
+  @include design-system.button-tertiary;
+  height: 44px;
+  min-width: 80px;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
 .auth-modal-panel {
   .mat-mdc-dialog-container {
     --mdc-dialog-container-padding: 0;

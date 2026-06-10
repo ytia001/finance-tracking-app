@@ -1,5 +1,3 @@
-// imports
-
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Category } from '../../../../core/constants/Category';
 import { inject, Injectable } from '@angular/core';
@@ -32,7 +30,6 @@ export class EntryModalControlService {
   }
 
   toRequestPayload(formGroup: FormGroup): DataEntryRequest {
-    console.log('FormGroup value:', formGroup.value); // Debug log to check form values
     return formGroup.value as DataEntryRequest;
   }
 }

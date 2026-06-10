@@ -20,8 +20,8 @@ describe('dashboard selectors', () => {
   describe('selectDashboardEntries', () => {
     it('should return the entries array from transaction state', () => {
       const entries = [
-        TestHelpers.makeEntry({ id: 1, category: Category.INCOME, amount: '500' }),
-        TestHelpers.makeEntry({ id: 2, category: Category.FOOD_AND_BEVERAGE, amount: '80' }),
+        TestHelpers.createDataEntry({ id: 1, category: Category.INCOME, amount: '500' }),
+        TestHelpers.createDataEntry({ id: 2, category: Category.FOOD_AND_BEVERAGE, amount: '80' }),
       ];
       const state: TransactionState = { loading: false, entries };
       expect(selectDashboardEntries.projector(state)).toEqual(entries);

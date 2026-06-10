@@ -31,8 +31,8 @@ describe('PieChartComponent', () => {
 
     it('should exclude income entries from pie chart', () => {
       const entries = [
-        TestHelpers.makeEntry({ category: Category.INCOME, amount: '500' }),
-        TestHelpers.makeEntry({ category: Category.FOOD_AND_BEVERAGE, amount: '100' }),
+        TestHelpers.createDataEntry({ category: Category.INCOME, amount: '500' }),
+        TestHelpers.createDataEntry({ category: Category.FOOD_AND_BEVERAGE, amount: '100' }),
       ];
       const result = component.parseData(entries);
       const labels = result.labels as string[];
@@ -42,9 +42,9 @@ describe('PieChartComponent', () => {
 
     it('should group entries by category and sum amounts', () => {
       const entries = [
-        TestHelpers.makeEntry({ category: Category.FOOD_AND_BEVERAGE, amount: '40' }),
-        TestHelpers.makeEntry({ category: Category.FOOD_AND_BEVERAGE, amount: '60' }),
-        TestHelpers.makeEntry({ category: Category.TRANSPORT, amount: '20' }),
+        TestHelpers.createDataEntry({ category: Category.FOOD_AND_BEVERAGE, amount: '40' }),
+        TestHelpers.createDataEntry({ category: Category.FOOD_AND_BEVERAGE, amount: '60' }),
+        TestHelpers.createDataEntry({ category: Category.TRANSPORT, amount: '20' }),
       ];
       const result = component.parseData(entries);
       const fnbIndex = (result.labels as string[]).indexOf(
@@ -54,13 +54,13 @@ describe('PieChartComponent', () => {
     });
 
     it('should use human-readable category labels from CategoryConfigurations', () => {
-      const entries = [TestHelpers.makeEntry({ category: Category.GROCERIES, amount: '50' })];
+      const entries = [TestHelpers.createDataEntry({ category: Category.GROCERIES, amount: '50' })];
       const result = component.parseData(entries);
       expect(result.labels).toContain(CategoryConfigurations[Category.GROCERIES].label);
     });
 
     it('should return empty dataset when all entries are income', () => {
-      const entries = [TestHelpers.makeEntry({ category: Category.INCOME, amount: '1000' })];
+      const entries = [TestHelpers.createDataEntry({ category: Category.INCOME, amount: '1000' })];
       const result = component.parseData(entries);
       expect(result.datasets[0].data.length).toBe(0);
     });

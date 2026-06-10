@@ -2,10 +2,9 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { MainActions } from '../actions/main.actions';
 import { catchError, filter, map, of, switchMap } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
 import { MainResourceActions } from '../actions/resources/main.actions';
 import { MainService } from '../../services/main.services';
-import { ModalConstants } from '../../constants/Modal';
+import { ModalDialogService } from '../../services/modal-dialog.service';
 import { EntryModalComponent } from '../../../features/main/entry-modal/entry-modal.component';
 import { DataEntryRequest } from '../../../features/main/entry-modal/entry-modal-control-service/entry-modal-control.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -14,27 +13,24 @@ import { ToastMessages } from '../../constants/Toast';
 @Injectable()
 export class MainEffects {
   private actions$ = inject(Actions);
-  private dialog = inject(MatDialog);
+  private modalDialogService = inject(ModalDialogService);
   private service = inject(MainService);
 
   openAddDataEntryModal$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MainActions.openAddDataEntryModal),
-      switchMap(() => {
-        const dialogRef = this.dialog.open(EntryModalComponent, {
-          disableClose: true,
-          width: ModalConstants.MODAL_WIDTH_PERCENTAGE,
-          height: ModalConstants.MODAL_HEIGHT_PERCENTAGE,
-        });
-
-        return dialogRef.afterClosed().pipe(
-          filter((result: DataEntryRequest | null): result is DataEntryRequest => !!result),
-          map((result) => {
-            return MainResourceActions.saveDataEntry({ data: result });
-          }),
-          catchError((error) => of(MainActions.error({ error }))),
-        );
-      }),
+      switchMap(() =>
+        this.modalDialogService
+          .open<
+            EntryModalComponent,
+            DataEntryRequest | null
+          >(EntryModalComponent, { disableClose: true })
+          .pipe(
+            filter((result): result is DataEntryRequest => result != null),
+            map((result) => MainResourceActions.saveDataEntry({ data: result })),
+            catchError((error) => of(MainActions.error({ error }))),
+          ),
+      ),
     );
   });
 
