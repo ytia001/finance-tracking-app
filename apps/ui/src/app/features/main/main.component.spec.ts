@@ -10,6 +10,7 @@ import { MainActions } from '../../core/store/actions/main.actions';
 import { ModalService } from '../../core/services/modal.service';
 import { AUTH_FEATURE_KEY, AuthState } from '../../core/store/reducers/auth.reducer';
 import { LoginModalComponent } from '../../features/auth/login/login-modal.component';
+import { selectIsAuthenticated } from '../../core/store/selectors/auth.selector';
 
 @Component({ standalone: true, template: '' })
 class DummyDashboardComponent {}
@@ -74,12 +75,7 @@ describe('MainComponent', () => {
   });
 
   it('should dispatch openAddDataEntryModal action when handleAddFinanceClicked is called', () => {
-    store.setState({
-      [AUTH_FEATURE_KEY]: {
-        ...initialAuthState,
-        isAuthenticated: true,
-      },
-    });
+    store.overrideSelector(selectIsAuthenticated, true);
     store.refreshState();
     fixture.detectChanges();
     dispatchSpy.calls.reset();
