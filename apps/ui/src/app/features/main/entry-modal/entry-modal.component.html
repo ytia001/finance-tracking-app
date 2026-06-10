@@ -59,11 +59,10 @@
       </div>
     </mat-dialog-content>
     <mat-dialog-actions>
-      <button mat-button type="button" (click)="closeDialog()">Close</button>
+      <button class="btn-tertiary" type="button" (click)="closeDialog()">Close</button>
 
       <button
-        mat-raised-button
-        color="primary"
+        class="btn-primary"
         type="button"
         [disabled]="entryFormGroup.invalid"
         (click)="saveDialog()"
@@ -82,7 +81,7 @@
       <span class="progress-text">Processing receipt...</span>
     } @else if (error$ | async; as error) {
       <span class="progress-text">{{ error }}</span>
-      <button mat-raised-button (click)="goBackToMainMenu()">Back to Main Menu</button>
+      <button class="btn-tertiary" (click)="goBackToMainMenu()">Back to Main Menu</button>
     }
   </mat-dialog-content>
 }

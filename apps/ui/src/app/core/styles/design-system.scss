@@ -44,6 +44,21 @@ $warning: #6b5a00;
 $warning-container: #f7ebc5;
 $on-warning: #ffffff;
 
+// ── Typography Scale ──
+$font-size-heading: 22px;
+$font-size-title: 16px;
+$font-size-body: 14px;
+$font-size-small: 13px;
+$font-size-icon: 24px;
+
+$line-height-heading: 28px;
+$line-height-title: 22px;
+$line-height-body: 20px;
+$line-height-small: 18px;
+
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+
 :root {
   --color-primary: #{$primary};
   --color-primary-container: #{$primary-container};

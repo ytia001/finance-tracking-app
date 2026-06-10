@@ -1,3 +1,5 @@
+@use '../../../core/styles/design-system.scss' as ds;
+
 .method-selection {
   display: flex;
   gap: 16px;
@@ -11,9 +13,9 @@
   align-items: center;
   gap: 8px;
   padding: 32px 24px;
-  border: 2px dashed #c0c0c0;
+  border: 2px dashed ds.$outline;
   border-radius: 12px;
-  background: #fafafa;
+  background: ds.$surface;
   cursor: pointer;
   transition: all 0.2s ease;
   min-width: 180px;
@@ -21,25 +23,27 @@
   color: inherit;
 
   &:hover {
-    border-color: #3f51b5;
-    background: #f0f2ff;
+    border-color: ds.$primary;
+    background: ds.$surface-container-low;
   }
 
   .mat-icon {
     font-size: 40px;
     height: 40px;
     width: 40px;
-    color: #3f51b5;
+    color: ds.$primary;
   }
 
   .card-title {
-    font-size: 16px;
-    font-weight: 600;
+    font-size: ds.$font-size-title;
+    font-weight: ds.$font-weight-semibold;
+    line-height: ds.$line-height-title;
   }
 
   .card-desc {
-    font-size: 13px;
-    color: #666;
+    font-size: ds.$font-size-small;
+    line-height: ds.$line-height-small;
+    color: ds.$on-surface-variant;
     text-align: center;
   }
 }
@@ -51,17 +55,19 @@
   justify-content: center;
   gap: 16px;
   padding: 24px;
-  height: 80%;
+  flex: 1;
+  min-height: 200px;
 
   .progress-text {
-    font-size: 15px;
-    color: #555;
+    font-size: ds.$font-size-body;
+    line-height: ds.$line-height-body;
+    color: ds.$on-surface-variant;
   }
 
   .success-icon {
     font-size: 48px;
     height: 48px;
     width: 48px;
-    color: #4caf50;
+    color: ds.$success;
   }
 }
